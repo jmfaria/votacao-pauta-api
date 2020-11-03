@@ -27,6 +27,7 @@ hs_err_pid*
 /target/
 */target/**
 **/META-INF/
+*.prefs
 
 # STS
 .apt_generated
@@ -34,6 +35,5 @@ hs_err_pid*
 .factorypath
 .project
 .settings
-.settings/**
 .springBeans
 .sts4-cache
