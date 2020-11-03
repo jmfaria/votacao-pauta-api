@@ -9,3 +9,12 @@ Além disso ele auxilia na configuração do projeto, trazendo ganho de produtiv
 ### JUnit
 Junit na sua versão 5, para execução de testes unitários.
 
+### Flyway
+Adicionado suporte Flyway para ajudar no versionamento da base de dados.
+
+### MySQL
+Adicionado suporte ao MySQL, banco escolhido para execução do projeto.
+
+### Swagger
+Adicionado suporte para documentação das APIs.
+
