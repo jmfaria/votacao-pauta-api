@@ -5,7 +5,7 @@ API para gerenciamento de sessões de votação.
 ### Banco de dados
 Serviço do MySQL executando localmente, ouvindo na porta padrão "3306".
 Caso contrário, alterar o valor da propriedade "spring.datasource.url" no arquivo "application.properties"
-Obs.: O usuário de acesso ao banco deve possuir permissão para execução de comandos DML.
+Obs.: O esquema "votacao_pauta" deve ser criado manualmente e o usuário de acesso ao banco deve possuir permissão para execução de comandos DML nesse esquema.
 
 ### Swagger
 Com a aplicação em execução, estando o valor da propriedade "spring.profiles.active" no arquivo "application.properties" como "dev", acesse o endereço http://localhost:8080/swagger-ui.html. Podendo a partir desse, fazer uso da API de Votação de Pauta.
