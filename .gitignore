@@ -33,6 +33,7 @@ hs_err_pid*
 .classpath
 .factorypath
 .project
-.settings/
+.settings
+.settings/**
 .springBeans
 .sts4-cache
