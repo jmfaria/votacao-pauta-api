@@ -18,3 +18,5 @@ Adicionado suporte ao MySQL, banco escolhido para execução do projeto.
 ### Swagger
 Adicionado suporte para documentação das APIs.
 
+### H2
+Adicionado suporte ao banco em memória para facilitar a execução dos testes.
