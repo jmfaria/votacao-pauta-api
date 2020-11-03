@@ -15,7 +15,7 @@ public class ApiPermissaoVotoServiceImpl implements ApiPermissaoVotoService {
 	
 	public String associadoComPermissaoParaVotar(String cpf) {
 
-		log.info("Pedindo permissão para API externa: CPF({})", cpf);
+		log.info("Pedindo à API externa, permissão de voto para o CPF({})", cpf);
 		RestTemplate restTemplate = new RestTemplate();
 		PermissaoVoto permissaoVoto = restTemplate.getForObject("https://user-info.herokuapp.com/users/" + cpf,
 				PermissaoVoto.class);

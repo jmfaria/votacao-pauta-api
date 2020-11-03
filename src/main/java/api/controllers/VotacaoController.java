@@ -121,7 +121,7 @@ public class VotacaoController {
 
 	private void validarDadosVotar(Optional<Associado> associado, Optional<Pauta> pauta, VotacaoDto votacaoDto,
 			BindingResult result) {
-
+		
 		if (!associado.isPresent()) {
 			result.addError(new ObjectError("Votação de Pauta", "Associado não existe."));
 			

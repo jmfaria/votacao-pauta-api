@@ -8,10 +8,11 @@ Caso contrário, alterar o valor da propriedade "spring.datasource.url" no arqui
 Obs.: O usuário de acesso ao banco deve possuir permissão para execução de comandos DML.
 
 ### Swagger
-Com a aplicação em execução, acesse o endereço http://localhost:8080/swagger-ui.html. Podendo a partir desse, fazer uso da API de Votação de Pauta.
+Com a aplicação em execução, estando o valor da propriedade "spring.profiles.active" no arquivo "application.properties" como "dev", acesse o endereço http://localhost:8080/swagger-ui.html. Podendo a partir desse, fazer uso da API de Votação de Pauta.
 
 ### Apache ActiveMQ
 Serviço do Apache ActiveMQ localmente em execução ouvindo na porta tcp://localhost:61616, podendo ser alterada essa configuração, através da propriedade "spring.activemq.broker-url" no arquivo "application.properties".
+A mensagem será publicada na fila de nome "votacao.pauta.api".
 
 ### Apache AB
 Com a API em execução, no diretório do executável "ab" do Apache execute:
@@ -27,6 +28,9 @@ Além disso ele auxilia na configuração do projeto, trazendo ganho de produtiv
 ### JUnit
 Junit na sua versão 5, para execução de testes unitários.
 
+### Mockito
+Geração de dados falsos para execução de testes.
+
 ### Apache AB
 Utilizado para teste de performance e estresse.
 
@@ -34,13 +38,16 @@ Utilizado para teste de performance e estresse.
 Adicionado suporte Flyway para ajudar no versionamento da base de dados.
 
 ### MySQL
-Adicionado suporte ao MySQL, banco escolhido para execução do projeto.
+Adicionado suporte ao MySQL, para persistir os dados a cada reinicialização da API.
 
 ### Swagger
-Adicionado suporte para documentação das APIs.
+Documentação automática, framework de fácil configuração.
 
 ### H2
 Adicionado suporte ao banco em memória para facilitar a execução dos testes.
 
 ### EHCache
 Adicionado e configurado o EHcache para execução mais performática do teste com Apache ab.
+
+### Versionamento de API
+Usaria através do mapeamento de Endpoints conforme utilizado nessa aplicação, sendo a versão parte do URI para chamar o recurso. Se por algum motivo arquitetural não essa opção seja aceita, utilizaria via Header X-API-Version.

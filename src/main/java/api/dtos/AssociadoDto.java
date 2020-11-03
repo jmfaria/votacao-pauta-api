@@ -39,4 +39,9 @@ public class AssociadoDto {
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
+
+	@Override
+	public String toString() {
+		return "AssociadoDto [id=" + id + ", nome=" + nome + ", cpf=" + cpf + "]";
+	}
 }

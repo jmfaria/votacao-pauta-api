@@ -40,4 +40,10 @@ public class VotacaoDto {
 		IdAssociado = idAssociado;
 	}
 
+	@Override
+	public String toString() {
+		return "VotacaoDto [Id=" + Id + ", IdPauta=" + IdPauta + ", IdAssociado=" + IdAssociado + ", voto=" + voto
+				+ "]";
+	}
+
 }

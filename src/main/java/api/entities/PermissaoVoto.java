@@ -13,4 +13,9 @@ public class PermissaoVoto {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	@Override
+	public String toString() {
+		return "PermissaoVoto [status=" + status + "]";
+	}
 }

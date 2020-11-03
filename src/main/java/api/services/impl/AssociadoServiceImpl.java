@@ -46,7 +46,7 @@ public class AssociadoServiceImpl implements AssociadoService {
 	@Override
 	public Optional<Associado> buscarPorCpf(String cpf) {
 		
-		log.info("Servico iniciado");
+		log.info("Validando a funcionalidade de Cache");
 		return this.associadoRepository.findByCpf(cpf);
 		
 	}

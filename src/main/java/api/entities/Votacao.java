@@ -82,4 +82,10 @@ public class Votacao {
 		this.voto = voto;
 	}
 
+	@Override
+	public String toString() {
+		return "Votacao [Id=" + Id + ", pauta=" + pauta + ", associado=" + associado + ", votadoEm=" + votadoEm
+				+ ", voto=" + voto + "]";
+	}
+
 }

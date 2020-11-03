@@ -41,6 +41,12 @@ public class PautaDto {
 
 	public void setTempoSessaoEmMinutos(Long tempoSessaoEmMinutos) {
 		this.tempoSessaoEmMinutos = tempoSessaoEmMinutos;
+	}
+
+	@Override
+	public String toString() {
+		return "PautaDto [id=" + id + ", nome=" + nome + ", descricao=" + descricao + ", tempoSessaoEmMinutos="
+				+ tempoSessaoEmMinutos + "]";
 	}	
 	
 }

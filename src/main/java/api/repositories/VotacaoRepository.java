@@ -5,11 +5,13 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import api.entities.Associado;
 import api.entities.Pauta;
 import api.entities.Votacao;
 
+@Transactional(readOnly = true)
 public interface VotacaoRepository extends JpaRepository<Votacao, Long> {
 	
 	Optional<Votacao> findByAssociadoAndPauta(Associado associado, Pauta pauta);

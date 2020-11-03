@@ -23,7 +23,7 @@ public class PautaServiceImpl implements PautaService {
 	
 	@Override
 	public Pauta finalizarPauta(Pauta pauta) {
-		log.info("Ecerrando Pauta: {} id: {}", pauta.getNome(), pauta.getId());
+		log.info("Encerrando Pauta: {} id: {}", pauta.getNome(), pauta.getId());
 		return this.pautaRepository.save(pauta);
 	}
 
