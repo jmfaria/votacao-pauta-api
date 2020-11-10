@@ -1,6 +1,6 @@
 package api.entities;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "pauta")
@@ -18,7 +16,7 @@ public class Pauta {
 	private Long id;
 	private String nome;
 	private String descricao;
-	private Calendar validaAte;
+	private LocalDateTime validaAte;
 	private Boolean encerrada;
 
 	public Pauta() {
@@ -54,13 +52,12 @@ public class Pauta {
 		this.descricao = descricao;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "valida_ate")
-	public Calendar getValidaAte() {
+	public LocalDateTime getValidaAte() {
 		return validaAte;
 	}
 
-	public void setValidaAte(Calendar validaAte) {
+	public void setValidaAte(LocalDateTime validaAte) {
 		this.validaAte = validaAte;
 	}
 

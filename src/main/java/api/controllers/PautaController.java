@@ -1,6 +1,7 @@
 package api.controllers;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,22 +79,22 @@ public class PautaController {
 		return ResponseEntity.ok(response);
 	}
 
-	private Calendar definirTempoDeSessao(PautaDto pautaDto) {
+	private LocalDateTime definirTempoDeSessao(PautaDto pautaDto) {
 
-		Calendar calendar = Calendar.getInstance();
+		LocalDateTime tempoDaSessao = LocalDateTime.now();
 		
 		if (pautaDto.getTempoSessaoEmMinutos() != null && pautaDto.getTempoSessaoEmMinutos() > 0) {
 			
 			// Abrir sessao com o tempo definido			
-			calendar.add(Calendar.MINUTE, pautaDto.getTempoSessaoEmMinutos().intValue());
+			tempoDaSessao = tempoDaSessao.plusMinutes(pautaDto.getTempoSessaoEmMinutos());
 			
 		} else {
 			
 			// Abrir sessao com tempo padrão (1 minuto)			
-			calendar.add(Calendar.MINUTE, 1);			
+			tempoDaSessao = tempoDaSessao.plusMinutes(1L);			
 		}
 		
-		return calendar;
+		return tempoDaSessao;
 	}
 
 	private void validarDadosAbrirSessao(Optional<Pauta> pauta, BindingResult result) {
@@ -143,9 +144,13 @@ public class PautaController {
 		pautaDto.setDescricao(pauta.getDescricao());
 
 		if (pauta.getValidaAte() != null) {
-			Long minutos = (pauta.getValidaAte().getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) / 60000;
-
-			pautaDto.setTempoSessaoEmMinutos(minutos);			
+			
+			//TODO Validar algoritmo
+			Long minutos = (pauta.getValidaAte().toEpochSecond(ZoneOffset.UTC) - 
+					LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) / 60;
+			pautaDto.setTempoSessaoEmMinutos(minutos);		
+			System.out.println("Saida em minutos: " + minutos + " pauta: " + pauta.getValidaAte().getSecond() + 
+					" localTime: " + LocalDateTime.now().getSecond());
 		}
 
 		return pautaDto;

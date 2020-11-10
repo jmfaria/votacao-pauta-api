@@ -2,6 +2,7 @@ package api.repositories;
 
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Optional;
 
@@ -76,13 +77,11 @@ public class VotacaoRepositoryTest{
 	
 	private Pauta gerarPauta() {
 		
+		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(10L);
 		Pauta pauta = new Pauta();
 		pauta.setNome("Nome da Pauta");
-		pauta.setDescricao("Descrição de Pauta");
-		
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, 10);
-		pauta.setValidaAte(calendar);
+		pauta.setDescricao("Descrição de Pauta");				
+		pauta.setValidaAte(localDateTime);
 		
 		return pauta;
 		

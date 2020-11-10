@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -70,14 +70,12 @@ public class PautaControllerTest {
 
 	private Pauta gerarPauta() {
 
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, tempoValidade.intValue());
-
+		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(tempoValidade);
 		Pauta pauta = new Pauta();
 		pauta.setId(1L);
 		pauta.setNome("Nome da Pauta1");
 		pauta.setDescricao("Descrição da Pauta1");
-		pauta.setValidaAte(calendar);
+		pauta.setValidaAte(localDateTime);
 
 		return pauta;
 
@@ -86,7 +84,6 @@ public class PautaControllerTest {
 	private String gerarJsonRequisicaoPost() throws JsonProcessingException {
 
 		PautaDto pautaDto = new PautaDto();
-
 		pautaDto.setId(null);
 		pautaDto.setNome(this.pauta.getNome());
 		pautaDto.setDescricao(this.pauta.getDescricao());

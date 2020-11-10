@@ -3,8 +3,8 @@ package api.repositories;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +41,7 @@ public class PautaRepositoryTest{
 	public void testPautaAbertaParaVotacao() {
 		
 		Optional<Pauta> pauta = this.pautaRepository.findByIdAndValidaAteAfter(
-				this.pautas.get(0).getId(), Calendar.getInstance());
+				this.pautas.get(0).getId(), LocalDateTime.now());
 		assertTrue(pauta.isPresent());
 		
 	}
@@ -56,7 +56,7 @@ public class PautaRepositoryTest{
 	
 	@Test
 	public void testBuscarPautasAtivas() {		
-		List<Pauta> pautas = this.pautaRepository.findByValidaAteAfter(Calendar.getInstance());
+		List<Pauta> pautas = this.pautaRepository.findByValidaAteAfter(LocalDateTime.now());
 		assertEquals(this.pautas.size(), pautas.size());
 	}
 	
@@ -68,21 +68,20 @@ public class PautaRepositoryTest{
 	
 	private List<Pauta> gerarPautas() {
 		
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, 10);
+		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(10L);
 		
 		List<Pauta> pautas = new ArrayList<Pauta>();
 		Pauta pauta = new Pauta();
 		pauta.setNome("Nome da Pauta1");
 		pauta.setDescricao("Descrição de Pauta1");		
-		pauta.setValidaAte(calendar);
+		pauta.setValidaAte(localDateTime);
 		pauta.setEncerrada(false);
 		
 		pautas.add(pauta);
 		pauta = new Pauta();
 		pauta.setNome("Nome da Pauta2");
 		pauta.setDescricao("Descrição de Pauta2");		
-		pauta.setValidaAte(calendar);
+		pauta.setValidaAte(localDateTime);
 		pauta.setEncerrada(false);
 		
 		return pautas;

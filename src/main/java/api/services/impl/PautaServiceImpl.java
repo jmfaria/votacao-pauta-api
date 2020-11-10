@@ -1,6 +1,6 @@
 package api.services.impl;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +29,7 @@ public class PautaServiceImpl implements PautaService {
 
 	@Override
 	public Optional<Pauta> estaAbertaParaVotacao(Long id) {
-		return this.pautaRepository.findByIdAndValidaAteAfter(id, Calendar.getInstance());
+		return this.pautaRepository.findByIdAndValidaAteAfter(id, LocalDateTime.now());
 	}
 	
 	@Override
@@ -39,7 +39,7 @@ public class PautaServiceImpl implements PautaService {
 
 	@Override
 	public List<Pauta> listarPautasAtivas() {
-		return this.pautaRepository.findByValidaAteAfter(Calendar.getInstance());
+		return this.pautaRepository.findByValidaAteAfter(LocalDateTime.now());
 	}
 
 	@Override

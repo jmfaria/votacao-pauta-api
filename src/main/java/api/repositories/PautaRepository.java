@@ -1,6 +1,6 @@
 package api.repositories;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,12 +15,12 @@ import api.entities.Pauta;
 public interface PautaRepository extends JpaRepository<Pauta, Long> {
 	
 	@Query(value = "SELECT p FROM Pauta p WHERE p.id = :id AND p.validaAte > :data AND p.encerrada = FALSE", nativeQuery = false)
-	Optional<Pauta> findByIdAndValidaAteAfter(@Param("id")Long id, @Param("data") Calendar data);
+	Optional<Pauta> findByIdAndValidaAteAfter(@Param("id")Long id, @Param("data")LocalDateTime data);
 	
 	Optional<Pauta> findByNome(String nome); 
 	
 	@Query(value = "SELECT p FROM Pauta p WHERE p.validaAte > :data AND p.encerrada = FALSE ", nativeQuery = false)
-	List<Pauta> findByValidaAteAfter(@Param("data")Calendar data);	
+	List<Pauta> findByValidaAteAfter(@Param("data")LocalDateTime data);	
 	
 	@Query(value = "SELECT p FROM Pauta p WHERE p.validaAte IS NOT NULL AND p.encerrada = FALSE ", nativeQuery = false)
 	List<Pauta> findByNotEncerrada();

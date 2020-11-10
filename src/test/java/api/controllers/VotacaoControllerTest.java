@@ -3,7 +3,7 @@ package api.controllers;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -88,14 +88,13 @@ public class VotacaoControllerTest {
 
 	private Pauta gerarPauta() {
 
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, 1);
+		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(1L);
 
 		Pauta pauta = new Pauta();
 		pauta.setId(1L);
 		pauta.setNome("Nome da Pauta1");
 		pauta.setDescricao("Descrição da Pauta1");
-		pauta.setValidaAte(calendar);
+		pauta.setValidaAte(localDateTime);
 		pauta.setEncerrada(false);
 
 		return pauta;

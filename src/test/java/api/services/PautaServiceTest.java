@@ -3,8 +3,8 @@ package api.services;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +33,9 @@ public class PautaServiceTest {
 	@BeforeEach
 	public void init() throws Exception {
 
-		BDDMockito.given(this.pautaRepository.findByValidaAteAfter(Mockito.any(Calendar.class)))
+		BDDMockito.given(this.pautaRepository.findByValidaAteAfter(Mockito.any(LocalDateTime.class)))
 				.willReturn(new ArrayList<Pauta>());
-		BDDMockito.given(this.pautaRepository.findByIdAndValidaAteAfter(Mockito.anyLong(), Mockito.any(Calendar.class)))
+		BDDMockito.given(this.pautaRepository.findByIdAndValidaAteAfter(Mockito.anyLong(), Mockito.any(LocalDateTime.class)))
 				.willReturn(Optional.of(new Pauta()));
 		BDDMockito.given(this.pautaRepository.findById(Mockito.anyLong())).willReturn(Optional.of(new Pauta()));
 		BDDMockito.given(this.pautaRepository.save(Mockito.any(Pauta.class))).willReturn(new Pauta());		
