@@ -64,7 +64,7 @@ public class PautaControllerTest {
 				.andExpect(jsonPath("$.data.id").value(this.pauta.getId()))
 				.andExpect(jsonPath("$.data.nome").value(this.pauta.getNome()))
 				.andExpect(jsonPath("$.data.descricao").value(this.pauta.getDescricao()))
-				.andExpect(jsonPath("$.data.tempoSessaoEmMinutos").value(tempoValidade -1))
+				.andExpect(jsonPath("$.data.tempoSessaoEmMinutos").value(tempoValidade))
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
 

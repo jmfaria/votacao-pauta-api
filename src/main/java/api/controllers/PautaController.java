@@ -149,8 +149,6 @@ public class PautaController {
 			Long minutos = (pauta.getValidaAte().toEpochSecond(ZoneOffset.UTC) - 
 					LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) / 60;
 			pautaDto.setTempoSessaoEmMinutos(minutos);		
-			System.out.println("Saida em minutos: " + minutos + " pauta: " + pauta.getValidaAte().getSecond() + 
-					" localTime: " + LocalDateTime.now().getSecond());
 		}
 
 		return pautaDto;
