@@ -23,11 +23,12 @@ public class MonitoraPautaServiceImpl {
 
 	@Scheduled(fixedDelay = 1000 * 60)
 	public void agendamentoParaFinaliarVotacaoDePauta() {
-
+		
 		this.pautaService.listarPautasNaoEncerradas().forEach(pauta -> {
 			
 			Optional<Pauta> p = this.pautaService.estaAbertaParaVotacao(pauta.getId());
 			if (!p.isPresent()) {
+				
 				pauta.setEncerrada(true);
 				this.pautaService.finalizarPauta(pauta);
 				this.mensageriaService.publicarMensagemNaFila(this.votacaoService.resultadoVotacao(pauta).toString());

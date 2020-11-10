@@ -72,7 +72,7 @@ public class Pauta {
 	public void setEncerrada(Boolean encerrada) {
 		this.encerrada = encerrada;
 	}
-
+		
 	@Override
 	public String toString() {
 		return "Pauta [id=" + id + ", nome=" + nome + ", descricao=" + descricao + ", validaAte=" + validaAte
