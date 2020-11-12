@@ -55,7 +55,7 @@ public class AssociadoServiceTest {
 
 	@Test
 	public void persistir() {
-		Associado associado = this.associadoService.persistir(new Associado());
+		Associado associado = this.associadoService.incluir(new Associado());
 		assertNotNull(associado);
 	}
 

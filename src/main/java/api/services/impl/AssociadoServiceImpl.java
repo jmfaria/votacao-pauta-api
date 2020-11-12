@@ -36,7 +36,7 @@ public class AssociadoServiceImpl implements AssociadoService {
 	}
 
 	@Override
-	public Associado persistir(Associado associado) {
+	public Associado incluir(Associado associado) {
 		
 		return this.associadoRepository.save(associado);
 		

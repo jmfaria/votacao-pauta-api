@@ -21,10 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import api.dtos.ResultadoVotacaoDto;
 import api.dtos.VotacaoDto;
-import api.entities.Associado;
 import api.entities.Pauta;
 import api.entities.ResultadoVotacao;
-import api.entities.Votacao;
 import api.response.Response;
 import api.services.ApiPermissaoVotoService;
 import api.services.AssociadoService;
@@ -39,12 +37,12 @@ public class VotacaoController {
 
 	@Autowired
 	private VotacaoService votacaoService;
-	@Autowired
-	private AssociadoService associadoService;
+//	@Autowired
+//	private AssociadoService associadoService;
 	@Autowired
 	private PautaService pautaService;
-	@Autowired
-	private ApiPermissaoVotoService apiPermissaoVotoService;
+//	@Autowired
+//	private ApiPermissaoVotoService apiPermissaoVotoService;
 
 	@PostMapping("/api/v1/votacao")
 	public ResponseEntity<Response<VotacaoDto>> votarV1(@Valid @RequestBody VotacaoDto votacaoDto, BindingResult result)
@@ -53,20 +51,20 @@ public class VotacaoController {
 		log.info("Efetuando votação - Associado id: {}, Pauta id: {}, voto: {}", votacaoDto.getIdAssociado(), votacaoDto.getIdPauta(), votacaoDto.getVoto());
 
 		Response<VotacaoDto> response = new Response<VotacaoDto>();
-		Optional<Associado> associado = this.associadoService.buscarPorId(votacaoDto.getIdAssociado());
-		Optional<Pauta> pauta = this.pautaService.buscarPorId(votacaoDto.getIdPauta());
-
-		this.validarDadosVotar(associado, pauta, votacaoDto, result);
-
+//		Optional<Associado> associado = this.associadoService.buscarPorId(votacaoDto.getIdAssociado());
+//		Optional<Pauta> pauta = this.pautaService.buscarPorId(votacaoDto.getIdPauta());
+//		this.validarDadosVotar(associado, pauta, votacaoDto, result);
+		
+		this.votacaoService.votar(votacaoDto, result);
+		response.setData(votacaoDto);
+		
 		if (result.hasErrors()) {
 			log.error("Erro ao validar dados de votação: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
+		} else {
+			return ResponseEntity.ok(response);
 		}
-
-		this.votacaoService.persistir(gerarVotacao(votacaoDto, associado, pauta));
-		response.setData(votacaoDto);
-		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/api/v1/votacao/resultado/{id}")
@@ -99,15 +97,6 @@ public class VotacaoController {
 		return resultadoVotacaoDto;
 	}
 
-	private Votacao gerarVotacao(VotacaoDto votacaoDto, Optional<Associado> associado, Optional<Pauta> pauta) {
-		
-		Votacao votacao = new Votacao();
-		votacao.setAssociado(associado.get());
-		votacao.setPauta(pauta.get());
-		votacao.setVoto(votacaoDto.getVoto().toUpperCase());
-		return votacao;
-	}
-	
 	private void validarDadosResultado(Optional<Pauta> pauta, BindingResult result) {
 		
 		if (!pauta.isPresent()) {
@@ -119,32 +108,32 @@ public class VotacaoController {
 		}		
 	}
 
-	private void validarDadosVotar(Optional<Associado> associado, Optional<Pauta> pauta, VotacaoDto votacaoDto,
-			BindingResult result) {
-		
-		if (!associado.isPresent()) {
-			result.addError(new ObjectError("Votação de Pauta", "Associado não existe."));
-			
-		} else if (!pauta.isPresent()) {
-			result.addError(new ObjectError("Votação de Pauta", "Pauta não existe."));
-			
-		} else if (!this.pautaService.estaAbertaParaVotacao(pauta.get().getId()).isPresent()) {
-			result.addError(new ObjectError("Votação de Pauta", "Pauta não aberta ou já encerrada para votação."));
-			
-		} else if (associado.isPresent() && pauta.isPresent()
-				&& this.votacaoService.jaVotou(associado.get(), pauta.get()).isPresent()) {
-			result.addError(new ObjectError("Votação de Pauta", "O Associado já votou nessa Pauta."));
-			
-		} else if (
-				this.apiPermissaoVotoService.associadoComPermissaoParaVotar(associado.get().getCpf())
-						.equalsIgnoreCase("UNABLE_TO_VOTE")) {
-			result.addError(new ObjectError("Votação de Pauta", "A API externa não permitiu o Associado votar."));
-		}
-
-		if (votacaoDto.getVoto() == null || (votacaoDto.getVoto().isEmpty()
-				&& !votacaoDto.getVoto().equalsIgnoreCase("sim") && !votacaoDto.getVoto().equalsIgnoreCase("não"))) {
-			result.addError(new ObjectError("Votação de Pauta",
-					"O voto deve ser expresso com as palavras \"SIM\" ou \"Não\"."));
-		}
-	}	
+//	private void validarDadosVotar(Optional<Associado> associado, Optional<Pauta> pauta, VotacaoDto votacaoDto,
+//			BindingResult result) {
+//		
+//		if (!associado.isPresent()) {
+//			result.addError(new ObjectError("Votação de Pauta", "Associado não existe."));
+//			
+//		} else if (!pauta.isPresent()) {
+//			result.addError(new ObjectError("Votação de Pauta", "Pauta não existe."));
+//			
+//		} else if (!this.pautaService.estaAbertaParaVotacao(pauta.get().getId()).isPresent()) {
+//			result.addError(new ObjectError("Votação de Pauta", "Pauta não aberta ou já encerrada para votação."));
+//			
+//		} else if (associado.isPresent() && pauta.isPresent()
+//				&& this.votacaoService.jaVotou(associado.get(), pauta.get()).isPresent()) {
+//			result.addError(new ObjectError("Votação de Pauta", "O Associado já votou nessa Pauta."));
+//			
+//		} else if (
+//				this.apiPermissaoVotoService.associadoComPermissaoParaVotar(associado.get().getCpf())
+//						.equalsIgnoreCase("UNABLE_TO_VOTE")) {
+//			result.addError(new ObjectError("Votação de Pauta", "A API externa não permitiu o Associado votar."));
+//		}
+//
+//		if (votacaoDto.getVoto() == null || (votacaoDto.getVoto().isEmpty()
+//				&& !votacaoDto.getVoto().equalsIgnoreCase("sim") && !votacaoDto.getVoto().equalsIgnoreCase("não"))) {
+//			result.addError(new ObjectError("Votação de Pauta",
+//					"O voto deve ser expresso com as palavras \"SIM\" ou \"Não\"."));
+//		}
+//	}	
 }

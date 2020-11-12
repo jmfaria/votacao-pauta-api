@@ -25,7 +25,7 @@ import api.services.AssociadoService;
 import api.utils.CpfUtils;
 
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 public class AssociadoController {
 
 	private static final Logger log = LoggerFactory.getLogger(AssociadoController.class);
@@ -52,7 +52,7 @@ public class AssociadoController {
 		}
 
 		Associado associado = converterParaAssociado(associadoDto);
-		this.associadoService.persistir(associado);
+		this.associadoService.incluir(associado);
 
 		response.setData(converterParaAssociadoDto(associado));
 		return ResponseEntity.ok(response);

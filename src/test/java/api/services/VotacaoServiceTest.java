@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.validation.DataBinder;
 
+import api.dtos.VotacaoDto;
 import api.entities.Associado;
 import api.entities.Pauta;
 import api.entities.ResultadoVotacao;
@@ -40,13 +42,7 @@ public class VotacaoServiceTest{
 
 	@Test
 	public void votar() {
-		Votacao votacao = this.votacaoService.votar(new Votacao());
-		assertNotNull(votacao);
-	}
-
-	@Test
-	public void persistir() {
-		Votacao votacao = this.votacaoService.persistir(new Votacao());
+		Votacao votacao = this.votacaoService.votar(new VotacaoDto(), new DataBinder(null).getBindingResult());
 		assertNotNull(votacao);
 	}
 

@@ -1,6 +1,7 @@
 package api.entities;
 
 import java.util.Calendar;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import api.dtos.VotacaoDto;
+
 @Entity
 @Table(name = "votacao")
 public class Votacao {
@@ -25,6 +28,13 @@ public class Votacao {
 	private String voto;
 
 	public Votacao() {
+	}
+	
+	public Votacao(VotacaoDto votacaoDto, Optional<Associado> associado, Optional<Pauta> pauta) {
+		
+		this.associado = associado.get();
+		this.pauta = pauta.get();
+		this.voto = votacaoDto.getVoto().toUpperCase();
 	}
 
 	@Id

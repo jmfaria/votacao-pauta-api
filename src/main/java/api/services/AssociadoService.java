@@ -11,7 +11,7 @@ public interface AssociadoService {
 	
 	Optional<Associado> buscarPorId(Long id);
 	
-	Associado persistir(Associado associado);
+	Associado incluir(Associado associado);
 	
 	Optional<Associado> buscarPorCpf(String cpf);
 
