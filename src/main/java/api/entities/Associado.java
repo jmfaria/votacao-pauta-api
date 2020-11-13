@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import api.dtos.AssociadoDto;
+
 @Entity
 @Table(name = "associado")
 public class Associado {
@@ -16,6 +18,15 @@ public class Associado {
 	private String cpf;
 	
 	public Associado() {		
+	}
+	
+	public Associado(AssociadoDto associadoDto) {
+		this.nome = associadoDto.getNome();
+		this.cpf = associadoDto.getCpf();
+	}
+	
+	public Associado(Long id) {
+		this.id = id;
 	}
 
 	@Id

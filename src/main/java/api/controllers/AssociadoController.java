@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,6 @@ import api.dtos.AssociadoDto;
 import api.entities.Associado;
 import api.response.Response;
 import api.services.AssociadoService;
-import api.utils.CpfUtils;
 
 @RestController
 @CrossOrigin("*")
@@ -43,19 +41,21 @@ public class AssociadoController {
 		log.info("Incluindo Associado {}", associadoDto.getNome());
 		Response<AssociadoDto> response = new Response<AssociadoDto>();
 
-		this.validarDadosIncluir(associadoDto, result);
+//		this.validarDadosIncluir(associadoDto, result);
+		
+		Associado associado = new Associado(associadoDto);
+		this.associadoService.incluir(associado);
+		
 
 		if (result.hasErrors()) {
 			log.error("Erro ao validar dados de inclusão de Associado: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
+		} else {
+
+			response.setData(new AssociadoDto(associado));
+			return ResponseEntity.ok(response);
 		}
-
-		Associado associado = converterParaAssociado(associadoDto);
-		this.associadoService.incluir(associado);
-
-		response.setData(converterParaAssociadoDto(associado));
-		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/api/v1/associados")
@@ -85,37 +85,37 @@ public class AssociadoController {
 			log.info(mensagem + "{}", cpf);
 			response.getErrors().add(mensagem + cpf);
 			return ResponseEntity.badRequest().body(response);
-		}
-
-		response.setData(this.converterParaAssociadoDto(associado.get()));
-		return ResponseEntity.ok(response);
-	}
-
-	private void validarDadosIncluir(AssociadoDto associadoDto, BindingResult result) {
-
-		if (associadoDto.getCpf() != null && !CpfUtils.ValidarCPF(associadoDto.getCpf())) {
-			result.addError(new ObjectError("Associado", "CPF inválido."));
-		} else if (this.associadoService.buscarPorCpf(associadoDto.getCpf()).isPresent()) {
-			result.addError(new ObjectError("Associado", "Associado com esse CPF já foi incluído."));
+		} else {
+			response.setData(new AssociadoDto(associado.get()));
+			return ResponseEntity.ok(response);
 		}
 	}
 
-	private AssociadoDto converterParaAssociadoDto(Associado associado) {
+//	private void validarDadosIncluir(AssociadoDto associadoDto, BindingResult result) {
+//
+//		if (associadoDto.getCpf() != null && !CpfUtils.ValidarCPF(associadoDto.getCpf())) {
+//			result.addError(new ObjectError("Associado", "CPF inválido."));
+//		} else if (this.associadoService.buscarPorCpf(associadoDto.getCpf()).isPresent()) {
+//			result.addError(new ObjectError("Associado", "Associado com esse CPF já foi incluído."));
+//		}
+//	}
 
-		AssociadoDto associadoDto = new AssociadoDto();
-		associadoDto.setId(associado.getId());
-		associadoDto.setNome(associado.getNome());
-		associadoDto.setCpf(associado.getCpf());
+//	private AssociadoDto converterParaAssociadoDto(Associado associado) {
+//
+//		AssociadoDto associadoDto = new AssociadoDto();
+//		associadoDto.setId(associado.getId());
+//		associadoDto.setNome(associado.getNome());
+//		associadoDto.setCpf(associado.getCpf());
+//
+//		return associadoDto;
+//	}
 
-		return associadoDto;
-	}
-
-	private Associado converterParaAssociado(AssociadoDto associadoDto) {
-
-		Associado associado = new Associado();
-		associado.setNome(associadoDto.getNome());
-		associado.setCpf(associadoDto.getCpf());
-
-		return associado;
-	}
+//	private Associado converterParaAssociado(AssociadoDto associadoDto) {
+//
+//		Associado associado = new Associado();
+//		associado.setNome(associadoDto.getNome());
+//		associado.setCpf(associadoDto.getCpf());
+//
+//		return associado;
+//	}
 }

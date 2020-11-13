@@ -1,5 +1,7 @@
 package api.dtos;
 
+import api.entities.Pauta;
+
 public class PautaDto {
 	
 	private Long id;
@@ -9,6 +11,13 @@ public class PautaDto {
 	
 	public PautaDto() {
 		
+	}
+	
+	public PautaDto(Pauta pauta) {
+		this.id = pauta.getId();
+		this.nome = pauta.getNome();
+		this.descricao = pauta.getDescricao();
+		this.tempoSessaoEmMinutos = pauta.getTempoSessaoMinutos();		
 	}
 
 	public Long getId() {

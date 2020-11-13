@@ -41,19 +41,21 @@ public class PautaController {
 		log.info("Incluindo Pauta {}", pautaDto.getNome());
 		Response<PautaDto> response = new Response<PautaDto>();
 
-		this.validarDadosIncluir(pautaDto, result);
+		// this.validarDadosIncluir(pautaDto, result);
+		
+		Pauta pauta = new Pauta(pautaDto);
+		this.pautaService.incluir(pauta);
+
+//		Pauta pauta = this.pautaService.incluir(new Pauta(pautaDto));
 
 		if (result.hasErrors()) {
 			log.error("Erro ao validar dados de inclusão de Pauta: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
+		} else {
+			response.setData(new PautaDto(pauta));
+			return ResponseEntity.ok(response);
 		}
-
-		Pauta pauta = converterParaPauta(pautaDto);
-		this.pautaService.persistir(pauta);
-
-		response.setData(converterParaDto(pauta));
-		return ResponseEntity.ok(response);
 	}
 
 	@PutMapping("/api/v1/pautas/id/{id}")
@@ -63,50 +65,20 @@ public class PautaController {
 		log.info("Abrindo sessão para Pauta id: {}", id);
 		Response<PautaDto> response = new Response<PautaDto>();
 
-		Optional<Pauta> pauta = this.pautaService.buscarPorId(id);
-		this.validarDadosAbrirSessao(pauta, result);
+//		Optional<Pauta> pauta = this.pautaService.buscarPorId(id);
+//		this.validarDadosAbrirSessao(pauta, result);
+
+		//pauta.get().setValidaAte(definirTempoDeSessao(pautaDto));
+		Pauta pauta = this.pautaService.abrirSessaoParaVotacao(new Pauta(id, pautaDto));
 
 		if (result.hasErrors()) {
 			log.error("Erro ao validar dados para abertura de sessão de Pauta: {}", result.getAllErrors());
 			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(response);
-		}
-		
-		pauta.get().setValidaAte(definirTempoDeSessao(pautaDto));
-		this.pautaService.abrirSessaoParaVotacao(pauta.get());
-
-		response.setData(converterParaDto(pauta.get()));
-		return ResponseEntity.ok(response);
-	}
-
-	private LocalDateTime definirTempoDeSessao(PautaDto pautaDto) {
-
-		LocalDateTime tempoDaSessao = LocalDateTime.now();
-		
-		if (pautaDto.getTempoSessaoEmMinutos() != null && pautaDto.getTempoSessaoEmMinutos() > 0) {
-			
-			// Abrir sessao com o tempo definido			
-			tempoDaSessao = tempoDaSessao.plusMinutes(pautaDto.getTempoSessaoEmMinutos());
-			
 		} else {
-			
-			// Abrir sessao com tempo padrão (1 minuto)			
-			tempoDaSessao = tempoDaSessao.plusMinutes(1L);			
+			response.setData(new PautaDto(pauta));
+			return ResponseEntity.ok(response);
 		}
-		
-		return tempoDaSessao;
-	}
-
-	private void validarDadosAbrirSessao(Optional<Pauta> pauta, BindingResult result) {
-
-		if (!pauta.isPresent()) {
-			result.addError(new ObjectError("Pauta", "Pauta inexistente."));
-		}
-
-		if (pauta.isPresent() && pauta.get().getEncerrada()) {
-			result.addError(new ObjectError("Pauta", "Pauta já encerrada."));
-		}
-
 	}
 
 	@GetMapping("/api/v1/pautas")
@@ -123,45 +95,75 @@ public class PautaController {
 		}
 	}
 
-	private void validarDadosIncluir(PautaDto pautaDto, BindingResult result) {
+//	private LocalDateTime definirTempoDeSessao(PautaDto pautaDto) {
+//
+//		LocalDateTime tempoDaSessao = LocalDateTime.now();
+//
+//		if (pautaDto.getTempoSessaoEmMinutos() != null && pautaDto.getTempoSessaoEmMinutos() > 0) {
+//
+//			// Abrir sessao com o tempo definido
+//			tempoDaSessao = tempoDaSessao.plusMinutes(pautaDto.getTempoSessaoEmMinutos());
+//
+//		} else {
+//
+//			// Abrir sessao com tempo padrão (1 minuto)
+//			tempoDaSessao = tempoDaSessao.plusMinutes(1L);
+//		}
+//
+//		return tempoDaSessao;
+//	}
 
-		if (!(pautaDto.getNome() != null && pautaDto.getNome().isEmpty())
-				&& (pautaDto.getNome().length() < 5 || pautaDto.getNome().length() > 100)) {
-			result.addError(new ObjectError("Pauta", "Nome deve conter entre 5 e 100 caracteres."));
-		}
+//	private void validarDadosAbrirSessao(Optional<Pauta> pauta, BindingResult result) {
+//
+//		if (!pauta.isPresent()) {
+//			result.addError(new ObjectError("Pauta", "Pauta inexistente."));
+//		}
+//
+//		if (pauta.isPresent() && pauta.get().getEncerrada()) {
+//			result.addError(new ObjectError("Pauta", "Pauta já encerrada."));
+//		}
+//
+//	}
 
-		if (this.pautaService.buscarPeloNome(pautaDto.getNome()).isPresent()) {
-			result.addError(new ObjectError("Pauta", "Já existe Pauta com esse nome."));
-		}
+//	private void validarDadosIncluir(PautaDto pautaDto, BindingResult result) {
+//
+//		if (!(pautaDto.getNome() != null && pautaDto.getNome().isEmpty())
+//				&& (pautaDto.getNome().length() < 5 || pautaDto.getNome().length() > 100)) {
+//			result.addError(new ObjectError("Pauta", "Nome deve conter entre 5 e 100 caracteres."));
+//		}
+//
+//		if (this.pautaService.buscarPeloNome(pautaDto.getNome()).isPresent()) {
+//			result.addError(new ObjectError("Pauta", "Já existe Pauta com esse nome."));
+//		}
+//
+//	}
 
-	}
+//	private PautaDto converterParaDto(Pauta pauta) {
+//
+//		PautaDto pautaDto = new PautaDto();
+//		pautaDto.setId(pauta.getId());
+//		pautaDto.setNome(pauta.getNome());
+//		pautaDto.setDescricao(pauta.getDescricao());
+//
+//		if (pauta.getValidaAte() != null) {
+//			
+//			//TODO Validar algoritmo
+//			Long minutos = (pauta.getValidaAte().toEpochSecond(ZoneOffset.UTC) - 
+//					LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) / 60;
+//			pautaDto.setTempoSessaoEmMinutos(minutos);		
+//		}
+//
+//		return pautaDto;
+//	}
 
-	private PautaDto converterParaDto(Pauta pauta) {
-
-		PautaDto pautaDto = new PautaDto();
-		pautaDto.setId(pauta.getId());
-		pautaDto.setNome(pauta.getNome());
-		pautaDto.setDescricao(pauta.getDescricao());
-
-		if (pauta.getValidaAte() != null) {
-			
-			//TODO Validar algoritmo
-			Long minutos = (pauta.getValidaAte().toEpochSecond(ZoneOffset.UTC) - 
-					LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) / 60;
-			pautaDto.setTempoSessaoEmMinutos(minutos);		
-		}
-
-		return pautaDto;
-	}
-
-	private Pauta converterParaPauta(PautaDto pautaDto) {
-
-		Pauta pauta = new Pauta();
-		pauta.setNome(pautaDto.getNome());
-		pauta.setDescricao(pautaDto.getDescricao());
-		pauta.setEncerrada(false);
-
-		return pauta;
-	}
+//	private Pauta converterParaPauta(PautaDto pautaDto) {
+//
+//		Pauta pauta = new Pauta();
+//		pauta.setNome(pautaDto.getNome());
+//		pauta.setDescricao(pautaDto.getDescricao());
+//		pauta.setEncerrada(false);
+//
+//		return pauta;
+//	}
 
 }

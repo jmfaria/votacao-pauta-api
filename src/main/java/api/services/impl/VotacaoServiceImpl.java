@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
 import org.springframework.validation.ObjectError;
 
-import api.dtos.VotacaoDto;
 import api.entities.Associado;
 import api.entities.Pauta;
 import api.entities.ResultadoVotacao;
@@ -34,20 +34,22 @@ public class VotacaoServiceImpl implements VotacaoService {
 	private ApiPermissaoVotoService apiPermissaoVotoService;
 	
 	@Override
-	public Votacao votar(VotacaoDto votacaoDto, BindingResult result) {
+	public Votacao votar(Votacao votacao) {
 		
-		Optional<Associado> associado = this.associadoService.buscarPorId(votacaoDto.getIdAssociado());
-		Optional<Pauta> pauta = this.pautaService.buscarPorId(votacaoDto.getIdPauta());		
-		Votacao votacao = new Votacao(votacaoDto, associado, pauta);
+		Optional<Associado> associado = this.associadoService.buscarPorId(votacao.getAssociado().getId());
+		Optional<Pauta> pauta = this.pautaService.buscarPorId(votacao.getPauta().getId());		
+//		Votacao votacao = new Votacao(votacaoDto, associado, pauta);
+		BindingResult result = new DataBinder(null).getBindingResult();
 		
-		
-		if (votacao.getAssociado() == null) {
-			result.addError(new ObjectError("Votação de Pauta", "Associado não existe."));
+//		if (votacao.getAssociado() == null) {
+//			result.addError(new ObjectError("Votação de Pauta", "Associado não existe."));
+//			
+//		} else if (votacao.getPauta() == null) {
+//			result.addError(new ObjectError("Votação de Pauta", "Pauta não existe."));
+//			
+//		} else 
 			
-		} else if (votacao.getPauta() == null) {
-			result.addError(new ObjectError("Votação de Pauta", "Pauta não existe."));
-			
-		} else if (!this.pautaService.estaAbertaParaVotacao(pauta.get().getId()).isPresent()) {
+		if (!this.pautaService.estaAbertaParaVotacao(pauta.get().getId()).isPresent()) {
 			result.addError(new ObjectError("Votação de Pauta", "Pauta não aberta ou já encerrada para votação."));
 			
 		} else if (associado.isPresent() && pauta.isPresent()
@@ -60,8 +62,8 @@ public class VotacaoServiceImpl implements VotacaoService {
 			result.addError(new ObjectError("Votação de Pauta", "A API externa não permitiu o Associado votar."));
 		}
 
-		if (votacaoDto.getVoto() == null || (votacaoDto.getVoto().isEmpty()
-				&& !votacaoDto.getVoto().equalsIgnoreCase("sim") && !votacaoDto.getVoto().equalsIgnoreCase("não"))) {
+		if (votacao.getVoto() == null || (votacao.getVoto().isEmpty()
+				&& !votacao.getVoto().equalsIgnoreCase("sim") && !votacao.getVoto().equalsIgnoreCase("não"))) {
 			result.addError(new ObjectError("Votação de Pauta",
 					"O voto deve ser expresso com as palavras \"SIM\" ou \"Não\"."));
 		}
@@ -75,13 +77,24 @@ public class VotacaoServiceImpl implements VotacaoService {
 	}
 	
 	@Override
-	public ResultadoVotacao resultadoVotacao(Pauta pauta) {
+	public ResultadoVotacao resultadoVotacao(Long idPauta) {
+		
+		Optional<Pauta> pauta = this.pautaService.buscarPorId(idPauta);		
+		BindingResult result = new DataBinder(null).getBindingResult();
+		
+		if (!pauta.isPresent()) {
+			result.addError(new ObjectError("Votação de Pauta", "Pauta não existe."));
+		}
+
+		if (this.pautaService.estaAbertaParaVotacao(pauta.get().getId()).isPresent()) {
+			result.addError(new ObjectError("Votação de Pauta", "A votação para essa Pauta ainda não foi encerrada."));
+		}
 		
 		ResultadoVotacao resultadoVotacao = new ResultadoVotacao();
-		resultadoVotacao.setVotosSim(this.votacaoRepository.countByPautaAndVoto(pauta, "SIM"));
-		resultadoVotacao.setVotosNao(this.votacaoRepository.countByPautaAndVoto(pauta, "NÃO"));
+		resultadoVotacao.setVotosSim(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "SIM"));
+		resultadoVotacao.setVotosNao(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "NÃO"));
 		resultadoVotacao.setVotosTotal(resultadoVotacao.getVotosSim() + resultadoVotacao.getVotosNao());
-		resultadoVotacao.setPauta(pauta);
+		resultadoVotacao.setPauta(pauta.get());
 		
 		return resultadoVotacao;
 	}

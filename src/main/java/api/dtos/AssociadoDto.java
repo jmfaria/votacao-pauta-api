@@ -4,6 +4,8 @@ import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.Length;
 
+import api.entities.Associado;
+
 public class AssociadoDto {
 
 	private Long id;
@@ -11,6 +13,12 @@ public class AssociadoDto {
 	private String cpf;
 	
 	public AssociadoDto() {}
+	
+	public AssociadoDto(Associado associado) {
+		this.id = associado.getId();
+		this.nome = associado.getNome();
+		this.cpf = associado.getCpf();
+	}
 
 	public Long getId() {
 		return id;

@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.validation.BindingResult;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +58,7 @@ public class VotacaoControllerTest {
 		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(1L)).willReturn(Optional.of(this.gerarPauta()));
 		BDDMockito.given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(this.gerarAssociado().getCpf()))
 				.willReturn("ENABLE_TO_VOTE");
-		BDDMockito.given(this.votacaoService.votar(Mockito.any(VotacaoDto.class), Mockito.any(BindingResult.class))).willReturn(new Votacao());
+		BDDMockito.given(this.votacaoService.votar(Mockito.any(Votacao.class))).willReturn(new Votacao());
 	}
 
 	@Test

@@ -1,7 +1,6 @@
 package api.entities;
 
 import java.util.Calendar;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,10 +29,10 @@ public class Votacao {
 	public Votacao() {
 	}
 	
-	public Votacao(VotacaoDto votacaoDto, Optional<Associado> associado, Optional<Pauta> pauta) {
+	public Votacao(VotacaoDto votacaoDto) {
 		
-		this.associado = associado.get();
-		this.pauta = pauta.get();
+		this.associado = new Associado(votacaoDto.getIdAssociado());
+		this.pauta = new Pauta(votacaoDto.getIdPauta());
 		this.voto = votacaoDto.getVoto().toUpperCase();
 	}
 

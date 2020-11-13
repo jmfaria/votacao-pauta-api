@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+import org.springframework.validation.ObjectError;
 
 import api.entities.Pauta;
 import api.repositories.PautaRepository;
@@ -48,7 +51,18 @@ public class PautaServiceImpl implements PautaService {
 	}
 
 	@Override
-	public Pauta persistir(Pauta pauta) {		
+	public Pauta incluir(Pauta pauta) {
+		
+		BindingResult result = new DataBinder(null).getBindingResult();
+		if (!(pauta.getNome() != null && pauta.getNome().isEmpty())
+				&& (pauta.getNome().length() < 5 || pauta.getNome().length() > 100)) {
+			result.addError(new ObjectError("Pauta", "Nome deve conter entre 5 e 100 caracteres."));
+		}
+
+		if (this.buscarPeloNome(pauta.getNome()).isPresent()) {
+			result.addError(new ObjectError("Pauta", "Já existe Pauta com esse nome."));
+		}
+		
 		return this.pautaRepository.save(pauta);
 	}
 
@@ -58,7 +72,18 @@ public class PautaServiceImpl implements PautaService {
 	}
 
 	@Override
-	public Pauta abrirSessaoParaVotacao(Pauta pauta) {		
+	public Pauta abrirSessaoParaVotacao(Pauta pauta) {	
+		
+		BindingResult result = new DataBinder(null).getBindingResult();
+		//pauta = this.buscarPorId(idPauta);
+		if (pauta != null) {
+			result.addError(new ObjectError("Pauta", "Pauta inexistente."));
+		}
+
+		if (pauta != null && pauta.getEncerrada()) {
+			result.addError(new ObjectError("Pauta", "Pauta já encerrada."));
+		}
+
 		return this.pautaRepository.save(pauta);
 	}
 

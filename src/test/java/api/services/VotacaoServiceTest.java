@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.validation.DataBinder;
 
-import api.dtos.VotacaoDto;
 import api.entities.Associado;
 import api.entities.Pauta;
 import api.entities.ResultadoVotacao;
@@ -28,6 +26,10 @@ public class VotacaoServiceTest{
 	
 	@MockBean
 	private VotacaoRepository votacaoRepository;
+	@MockBean
+	private AssociadoService associadoService;
+	@MockBean
+	private PautaService pautaService;
 	
 	@Autowired
 	private VotacaoService votacaoService;
@@ -35,6 +37,10 @@ public class VotacaoServiceTest{
 	@BeforeEach
 	public void init() throws Exception {
 		BDDMockito.given(this.votacaoRepository.save(Mockito.any(Votacao.class))).willReturn(new Votacao());
+		BDDMockito.given(this.associadoService.buscarPorId(Mockito.anyLong())).willReturn(
+				Optional.of(new Associado()));
+		BDDMockito.given(this.pautaService.buscarPorId(Mockito.anyLong())).willReturn(
+				Optional.of(new Pauta()));
 		BDDMockito.given(this.votacaoRepository
 				.findByAssociadoAndPauta(Mockito.any(Associado.class), Mockito.any(Pauta.class)))
 		.willReturn(Optional.of(new Votacao()));
@@ -42,7 +48,7 @@ public class VotacaoServiceTest{
 
 	@Test
 	public void votar() {
-		Votacao votacao = this.votacaoService.votar(new VotacaoDto(), new DataBinder(null).getBindingResult());
+		Votacao votacao = this.votacaoService.votar(this.gerarVotacao());
 		assertNotNull(votacao);
 	}
 
@@ -54,8 +60,18 @@ public class VotacaoServiceTest{
 	
 	@Test
 	public void resultadoVotacao() {
-		ResultadoVotacao resultadoVotacao = this.votacaoService.resultadoVotacao(new Pauta());
+		ResultadoVotacao resultadoVotacao = this.votacaoService.resultadoVotacao(1L);
 		assertNotNull(resultadoVotacao);
+	}
+	
+	private Votacao gerarVotacao() {
+		
+		Votacao votacao = new Votacao();
+		votacao.setAssociado(new Associado(1L));
+		votacao.setPauta(new Pauta(1L));
+		votacao.setVoto("sim");
+		
+		return votacao;
 	}
 
 }

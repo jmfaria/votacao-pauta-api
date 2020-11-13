@@ -62,7 +62,7 @@ public class PautaServiceTest {
 
 	@Test
 	public void persistir() {
-		Pauta pauta = this.pautaService.persistir(new Pauta());
+		Pauta pauta = this.pautaService.incluir(new Pauta());
 		assertNotNull(pauta);
 	}
 

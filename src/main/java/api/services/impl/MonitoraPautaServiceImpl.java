@@ -33,8 +33,8 @@ public class MonitoraPautaServiceImpl {
 		
 		this.pautaService.listarPautasNaoEncerradas().forEach(pauta -> {
 			
-			Optional<Pauta> p = this.pautaService.estaAbertaParaVotacao(pauta.getId());
-			if (!p.isPresent()) {
+			Optional<Pauta> pautaCorrente = this.pautaService.estaAbertaParaVotacao(pauta.getId());
+			if (!pautaCorrente.isPresent()) {
 				
 				pauta.setEncerrada(true);
 				this.pautaService.finalizarPauta(pauta);
@@ -42,7 +42,7 @@ public class MonitoraPautaServiceImpl {
 					this.mensageriaService.publicarMensagemNaFila(
 							//this.votacaoService.resultadoVotacao(pauta).toString()
 							new ObjectMapper().writeValueAsString(
-									this.votacaoService.resultadoVotacao(pauta)
+									this.votacaoService.resultadoVotacao(pautaCorrente.get().getId())
 									)
 							);
 				} catch (JsonProcessingException e) {					

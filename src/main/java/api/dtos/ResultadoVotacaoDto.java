@@ -1,5 +1,7 @@
 package api.dtos;
 
+import api.entities.ResultadoVotacao;
+
 public class ResultadoVotacaoDto {
 		
 	private long votosTotal;
@@ -7,6 +9,12 @@ public class ResultadoVotacaoDto {
 	private long votosNao;
 	
 	public ResultadoVotacaoDto() {}
+	
+	public ResultadoVotacaoDto(ResultadoVotacao resultadoVotacao) {
+		this.votosSim = resultadoVotacao.getVotosSim();
+		this.votosNao = resultadoVotacao.getVotosNao();
+		this.votosTotal = resultadoVotacao.getVotosTotal();
+	}
 	
 	public Long getVotosSim() {
 		return votosSim;

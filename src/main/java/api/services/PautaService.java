@@ -13,7 +13,7 @@ public interface PautaService {
 	
 	Optional<Pauta> buscarPorId(Long id);
 	
-	Pauta persistir(Pauta pauta);
+	Pauta incluir(Pauta pauta);
 	
 	Optional<Pauta> buscarPeloNome(String nome);
 	

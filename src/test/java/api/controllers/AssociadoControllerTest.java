@@ -50,6 +50,9 @@ public class AssociadoControllerTest {
 	@BeforeEach
 	public void init() {
 		this.associados = gerarAssociados();
+		BDDMockito.given(this.associadoService.buscarPorCpf(Mockito.anyString()))
+				.willReturn(Optional.of(gerarAssociados().get(0)));
+		BDDMockito.given(this.associadoService.listar()).willReturn(this.associados);
 	}
 
 	@Order(1)
@@ -68,8 +71,8 @@ public class AssociadoControllerTest {
 	@Test
 	public void testBuscarPorCpfV1() throws Exception {
 		
-		BDDMockito.given(this.associadoService.buscarPorCpf(Mockito.anyString()))
-				.willReturn(Optional.of(this.associados.get(0)));
+//		BDDMockito.given(this.associadoService.buscarPorCpf(Mockito.anyString()))
+//				.willReturn(Optional.of(this.associados.get(0)));
 
 		mvc.perform(MockMvcRequestBuilders.get("/api/v1/associados/cpf/" + this.associados.get(0).getCpf())
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
@@ -83,7 +86,7 @@ public class AssociadoControllerTest {
 	@Test
 	public void testListarAssociados() throws Exception {
 
-		BDDMockito.given(this.associadoService.listar()).willReturn(this.associados);
+//		BDDMockito.given(this.associadoService.listar()).willReturn(this.associados);
 
 		mvc.perform(MockMvcRequestBuilders.get("/api/v1/associados").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

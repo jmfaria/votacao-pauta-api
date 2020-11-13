@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import api.dtos.PautaDto;
 import api.entities.Pauta;
+import api.repositories.PautaRepository;
 
 @TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest
@@ -33,7 +36,7 @@ public class PautaControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
-
+	
 	private Pauta pauta;
 	private Long tempoValidade = 10L;
 	
@@ -41,7 +44,7 @@ public class PautaControllerTest {
 	public void init() {
 		this.pauta = gerarPauta();
 	}
-
+	
 	@Order(1)
 	@Test
 	public void testIncluirV1() throws Exception {		
