@@ -1,6 +1,6 @@
 package api.entities;
 
-import java.util.Calendar;
+import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import api.dtos.VotacaoDto;
 
@@ -23,7 +21,7 @@ public class Votacao {
 	private Long Id;
 	private Pauta pauta;
 	private Associado associado;
-	private Calendar votadoEm;
+	private LocalTime votadoEm;
 	private String voto;
 
 	public Votacao() {
@@ -67,19 +65,18 @@ public class Votacao {
 		this.associado = associado;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "votado_em")
-	public Calendar getVotadoEm() {
+	public LocalTime getVotadoEm() {
 		return votadoEm;
 	}
 
-	public void setVotadoEm(Calendar votadoEm) {
+	public void setVotadoEm(LocalTime votadoEm) {
 		this.votadoEm = votadoEm;
 	}
 
 	@PrePersist
 	private void PrePersist() {
-		this.votadoEm = Calendar.getInstance();
+		this.votadoEm = LocalTime.now();
 	}
 
 	@Column(name = "voto")

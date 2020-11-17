@@ -24,5 +24,4 @@ public class MensageriaServiceImpl implements MensageriaService {
     	jmsTemplate.convertAndSend("votacao.pauta.api", mensagem);    	
 		
 	}
-
 }

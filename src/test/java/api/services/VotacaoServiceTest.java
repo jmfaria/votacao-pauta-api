@@ -1,8 +1,9 @@
 package api.services;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,8 @@ public class VotacaoServiceTest{
 	private AssociadoService associadoService;
 	@MockBean
 	private PautaService pautaService;
+	@MockBean
+	private ApiPermissaoVotoService apiPermissaoVotoService;
 	
 	@Autowired
 	private VotacaoService votacaoService;
@@ -38,12 +41,20 @@ public class VotacaoServiceTest{
 	public void init() throws Exception {
 		BDDMockito.given(this.votacaoRepository.save(Mockito.any(Votacao.class))).willReturn(new Votacao());
 		BDDMockito.given(this.associadoService.buscarPorId(Mockito.anyLong())).willReturn(
-				Optional.of(new Associado()));
+				Optional.of(gerarAssociado()));
 		BDDMockito.given(this.pautaService.buscarPorId(Mockito.anyLong())).willReturn(
-				Optional.of(new Pauta()));
+				Optional.of(new Pauta(1L)));
+		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(Mockito.anyLong())).willReturn(true);		
+		
+//		BDDMockito.given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta()))
+//		.willReturn(false);
+		
+		BDDMockito.given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(Mockito.anyString()))
+		.willReturn("ENABLE_TO_VOTE");
+		
 		BDDMockito.given(this.votacaoRepository
 				.findByAssociadoAndPauta(Mockito.any(Associado.class), Mockito.any(Pauta.class)))
-		.willReturn(Optional.of(new Votacao()));
+		.willReturn(Optional.empty());
 	}
 
 	@Test
@@ -55,7 +66,7 @@ public class VotacaoServiceTest{
 	@Test
 	public void jaVotou() {
 		Optional<Votacao> votacao = this.votacaoService.jaVotou(new Associado(), new Pauta());
-		assertTrue(votacao.isPresent());
+		assertFalse(votacao.isPresent());
 	}
 	
 	@Test
@@ -67,11 +78,33 @@ public class VotacaoServiceTest{
 	private Votacao gerarVotacao() {
 		
 		Votacao votacao = new Votacao();
-		votacao.setAssociado(new Associado(1L));
-		votacao.setPauta(new Pauta(1L));
+		votacao.setAssociado(gerarAssociado());
+		votacao.setPauta(gerarPauta());
 		votacao.setVoto("sim");
 		
 		return votacao;
 	}
+	
+	private Associado gerarAssociado() {
+		Associado associado = new Associado();
+		associado.setId(1L);
+		associado.setCpf("71308724462");
+		associado.setNome("Associado teste");
+		return associado;
+	}
+	
+	private Pauta gerarPauta() {
 
+		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(10L);
+		Pauta pauta = new Pauta();
+		pauta.setId(1L);
+		pauta.setNome("Nome da Pauta1");
+		pauta.setDescricao("Descrição da Pauta1");
+		pauta.setValidaAte(localDateTime);
+
+		return pauta;
+
+	}
+
+		
 }

@@ -31,8 +31,8 @@ public class PautaServiceImpl implements PautaService {
 	}
 
 	@Override
-	public Optional<Pauta> estaAbertaParaVotacao(Long id) {
-		return this.pautaRepository.findByIdAndValidaAteAfter(id, LocalDateTime.now());
+	public Boolean estaAbertaParaVotacao(Long id) {
+		return this.pautaRepository.findByIdAndValidaAteAfter(id, LocalDateTime.now()).isPresent();
 	}
 	
 	@Override
@@ -72,19 +72,24 @@ public class PautaServiceImpl implements PautaService {
 	}
 
 	@Override
-	public Pauta abrirSessaoParaVotacao(Pauta pauta) {	
+	public Pauta abrirSessaoParaVotacao(Pauta pautaRecebida) {	
 		
-		BindingResult result = new DataBinder(null).getBindingResult();
-		//pauta = this.buscarPorId(idPauta);
-		if (pauta != null) {
+		BindingResult result = new DataBinder(null).getBindingResult();			
+		Optional<Pauta> pauta = this.buscarPorId(pautaRecebida.getId());			
+		
+		if (!pauta.isPresent()) {
 			result.addError(new ObjectError("Pauta", "Pauta inexistente."));
+		}else {
+			
+			//Atribui à pauta do contexto a validade da pauta criada atraves da requisição
+			pauta.get().setValidaAte(pautaRecebida.getValidaAte());
 		}
 
-		if (pauta != null && pauta.getEncerrada()) {
+		if (pauta.isPresent() && pauta.get().getEncerrada()) {
 			result.addError(new ObjectError("Pauta", "Pauta já encerrada."));
 		}
 
-		return this.pautaRepository.save(pauta);
+		return this.pautaRepository.save(pauta.get());
 	}
 
 }

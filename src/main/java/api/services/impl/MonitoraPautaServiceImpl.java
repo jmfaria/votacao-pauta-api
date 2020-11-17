@@ -1,7 +1,5 @@
 package api.services.impl;
 
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import api.entities.Pauta;
 import api.services.MensageriaService;
 import api.services.PautaService;
 import api.services.VotacaoService;
@@ -33,18 +30,20 @@ public class MonitoraPautaServiceImpl {
 		
 		this.pautaService.listarPautasNaoEncerradas().forEach(pauta -> {
 			
-			Optional<Pauta> pautaCorrente = this.pautaService.estaAbertaParaVotacao(pauta.getId());
-			if (!pautaCorrente.isPresent()) {
+			if (!this.pautaService.estaAbertaParaVotacao(pauta.getId())) {
 				
 				pauta.setEncerrada(true);
 				this.pautaService.finalizarPauta(pauta);
-				try {
+				
+				try {					
+					
 					this.mensageriaService.publicarMensagemNaFila(
-							//this.votacaoService.resultadoVotacao(pauta).toString()
+//							this.votacaoService.resultadoVotacao(pauta.getId()).toString()
 							new ObjectMapper().writeValueAsString(
-									this.votacaoService.resultadoVotacao(pautaCorrente.get().getId())
+									this.votacaoService.resultadoVotacao(pauta.getId())
 									)
 							);
+					
 				} catch (JsonProcessingException e) {					
 					log.error(e.getMessage());
 					e.printStackTrace();

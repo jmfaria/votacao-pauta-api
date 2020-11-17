@@ -42,20 +42,17 @@ public class AssociadoServiceImpl implements AssociadoService {
 	@Override
 	public Associado incluir(Associado associado) {
 		
-		log.error("01");
 		BindingResult result = new DataBinder(null).getBindingResult();
 		
-		log.error("02");
 		if (associado.getCpf() != null && !CpfUtils.ValidarCPF(associado.getCpf())) {
 			result.addError(new ObjectError("Associado", "CPF inválido."));
-			log.error("03");
+			
 		} else if (this.buscarPorCpf(associado.getCpf()).isPresent()) {
 			result.addError(new ObjectError("Associado", "Associado com esse CPF já foi incluído."));
 			
 		}
-		log.error("04");
-		return this.associadoRepository.save(associado);
 		
+		return this.associadoRepository.save(associado);		
 	}
 
 	@Cacheable("cacheAssociadoPorCPF")

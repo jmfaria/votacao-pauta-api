@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -55,10 +56,10 @@ public class VotacaoControllerTest {
 	public void init() {
 		BDDMockito.given(this.associadoService.buscarPorId(1L)).willReturn(Optional.of(this.gerarAssociado()));
 		BDDMockito.given(this.pautaService.buscarPorId(1L)).willReturn(Optional.of(this.gerarPauta()));
-		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(1L)).willReturn(Optional.of(this.gerarPauta()));
+		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(1L)).willReturn(true);
 		BDDMockito.given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(this.gerarAssociado().getCpf()))
 				.willReturn("ENABLE_TO_VOTE");
-		BDDMockito.given(this.votacaoService.votar(Mockito.any(Votacao.class))).willReturn(new Votacao());
+		BDDMockito.given(this.votacaoService.votar(Mockito.any(Votacao.class))).willReturn(this.gerarVotacao());
 	}
 
 	@Test
@@ -108,5 +109,18 @@ public class VotacaoControllerTest {
 		associado.setNome("Associado 1");
 
 		return associado;
+	}
+	
+	private Votacao gerarVotacao() {
+		
+		Votacao votacao = new Votacao();
+
+		votacao.setId(1L);
+		votacao.setAssociado(new Associado(1L));
+		votacao.setPauta(new Pauta(1L));
+		votacao.setVoto("SIM");
+		votacao.setVotadoEm(LocalTime.now());
+
+		return votacao;
 	}
 }

@@ -6,6 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
 
 import api.dtos.AssociadoDto;
 
@@ -40,6 +43,8 @@ public class Associado {
 		this.id = id;
 	}
 
+	@NotEmpty(message = "Nome não pode ser vazio.")
+	@Length(min = 3, max = 200, message = "Nome deve conter entre 3 e 200 caracteres.")
 	@Column
 	public String getNome() {
 		return nome;
@@ -49,6 +54,8 @@ public class Associado {
 		this.nome = nome;
 	}
 
+	@NotEmpty(message = "CPF não pode ser vazio.")
+	@Length(min = 11, max = 11, message = "CPF deve conter 11 caracteres.")
 	@Column
 	public String getCpf() {
 		return cpf;

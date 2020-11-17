@@ -7,7 +7,7 @@ import api.entities.Pauta;
 
 public interface PautaService {
 	
-	Optional<Pauta> estaAbertaParaVotacao(Long id);
+	Boolean estaAbertaParaVotacao(Long id);
 		
 	List<Pauta> listarPautasAtivas();
 	

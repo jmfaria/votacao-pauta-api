@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -35,17 +36,22 @@ public class PautaServiceTest {
 
 		BDDMockito.given(this.pautaRepository.findByValidaAteAfter(Mockito.any(LocalDateTime.class)))
 				.willReturn(new ArrayList<Pauta>());
-		BDDMockito.given(this.pautaRepository.findByIdAndValidaAteAfter(Mockito.anyLong(), Mockito.any(LocalDateTime.class)))
+		BDDMockito.given(
+				this.pautaRepository.findByIdAndValidaAteAfter(Mockito.anyLong(), Mockito.any(LocalDateTime.class)))
 				.willReturn(Optional.of(new Pauta()));
 		BDDMockito.given(this.pautaRepository.findById(Mockito.anyLong())).willReturn(Optional.of(new Pauta()));
-		BDDMockito.given(this.pautaRepository.save(Mockito.any(Pauta.class))).willReturn(new Pauta());		
-		BDDMockito.given(this.pautaRepository.findByNome(Mockito.anyString())).willReturn(Optional.of(new Pauta()));		
+		BDDMockito.given(this.pautaRepository.save(Mockito.any(Pauta.class))).willReturn(new Pauta());
+		BDDMockito.given(this.pautaRepository.findByNome(Mockito.anyString())).willReturn(Optional.of(new Pauta()));
+	}
+	
+	@AfterEach
+	public void tearDown() throws Exception{
+		this.pautaRepository.deleteAll();
 	}
 
 	@Test
 	public void estaAbertaParaVotacao() {
-		Optional<Pauta> pauta = this.pautaService.estaAbertaParaVotacao(1L);
-		assertTrue(pauta.isPresent());
+		assertTrue(this.pautaService.estaAbertaParaVotacao(1L));
 	}
 
 	@Test
@@ -62,7 +68,7 @@ public class PautaServiceTest {
 
 	@Test
 	public void persistir() {
-		Pauta pauta = this.pautaService.incluir(new Pauta());
+		Pauta pauta = this.pautaService.incluir(this.gerarPauta());
 		assertNotNull(pauta);
 	}
 
@@ -74,8 +80,19 @@ public class PautaServiceTest {
 
 	@Test
 	public void abrirSessaoParaVotacao() {
-		Pauta pauta = this.pautaService.abrirSessaoParaVotacao(new Pauta());
+		Pauta pauta = this.pautaService.abrirSessaoParaVotacao(new Pauta(1L, 1L));
 		assertNotNull(pauta);
+	}
+
+	private Pauta gerarPauta() {
+
+		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(10L);
+		Pauta pauta = new Pauta();
+		pauta.setNome("Nome da Pauta1");
+		pauta.setDescricao("Descrição de Pauta1");
+		pauta.setValidaAte(localDateTime);
+		pauta.setEncerrada(false);
+		return pauta;
 	}
 
 }

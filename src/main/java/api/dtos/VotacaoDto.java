@@ -1,5 +1,7 @@
 package api.dtos;
 
+import api.entities.Votacao;
+
 public class VotacaoDto {
 	
 	private Long Id;
@@ -8,6 +10,13 @@ public class VotacaoDto {
 	private String voto;
 	
 	public VotacaoDto() {}
+	
+	public VotacaoDto(Votacao votacao) {
+		this.Id = votacao.getId();
+		this.IdPauta = votacao.getPauta().getId();
+		this.IdAssociado = votacao.getAssociado().getId();
+		this.voto = votacao.getVoto();
+	}
 	
 	public Long getId() {
 		return Id;

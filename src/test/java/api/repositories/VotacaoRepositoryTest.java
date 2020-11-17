@@ -3,7 +3,7 @@ package api.repositories;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
+import java.time.LocalTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
@@ -92,7 +92,7 @@ public class VotacaoRepositoryTest{
 		Votacao votacao = new Votacao();
 		votacao.setAssociado(associado);
 		votacao.setPauta(pauta);
-		votacao.setVotadoEm(Calendar.getInstance());
+		votacao.setVotadoEm(LocalTime.now());
 		votacao.setVoto("SIM");
 		
 		return votacao;

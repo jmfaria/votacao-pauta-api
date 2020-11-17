@@ -21,29 +21,37 @@ public class Pauta {
 	private String nome;
 	private String descricao;
 	private LocalDateTime validaAte;
-	private Boolean encerrada;
+	private Boolean encerrada = false;
 
 	public Pauta() {
 
 	}
-	
+
 	public Pauta(Long id) {
 		this.id = id;
 	}
-	
+
 	public Pauta(PautaDto pautaDto) {
 		this.nome = pautaDto.getNome();
 		this.descricao = pautaDto.getDescricao();
-		this.setEncerrada(false);	
+		this.setEncerrada(false);
 	}
 	
+	public Pauta(Long id, Long tempoDaSessao) {
+
+		this.id = id;
+		this.validaAte = this.definirTempoDeSessao(tempoDaSessao);
+	}	
+
 	public Pauta(Long id, PautaDto pautaDto) {
-		
+
+		this.id = id;
 		this.nome = pautaDto.getNome();
 		this.descricao = pautaDto.getDescricao();
-		this.setEncerrada(false);	
-		this.validaAte = this.definirTempoDeSessao(pautaDto);
-	}
+		this.setEncerrada(false);
+		this.validaAte = this.definirTempoDeSessao(pautaDto.getTempoSessaoEmMinutos());
+	}	
+	
 
 	@Id
 	@Column(name = "id")
@@ -83,7 +91,7 @@ public class Pauta {
 		this.validaAte = validaAte;
 	}
 
-	@Column(name = "encerrada")	
+	@Column(name = "encerrada")
 	public Boolean getEncerrada() {
 		return encerrada;
 	}
@@ -91,39 +99,24 @@ public class Pauta {
 	public void setEncerrada(Boolean encerrada) {
 		this.encerrada = encerrada;
 	}
-	
-	@Transient
-	private LocalDateTime definirTempoDeSessao(PautaDto pautaDto) {
 
-		LocalDateTime tempoDaSessao = LocalDateTime.now();
+	private LocalDateTime definirTempoDeSessao(Long tempoDaSessao) {
 
-		if (pautaDto.getTempoSessaoEmMinutos() != null && pautaDto.getTempoSessaoEmMinutos() > 0) {
-
-			// Abrir sessao com o tempo definido
-			tempoDaSessao = tempoDaSessao.plusMinutes(pautaDto.getTempoSessaoEmMinutos());
-
-		} else {
-
-			// Abrir sessao com tempo padrão (1 minuto)
-			tempoDaSessao = tempoDaSessao.plusMinutes(1L);
-		}
-
-		return tempoDaSessao;
+		return (tempoDaSessao != null && tempoDaSessao > 0 ? LocalDateTime.now().plusMinutes(tempoDaSessao)
+				: LocalDateTime.now().plusMinutes(1L));
 	}
-	
+
 	@Transient
 	public Long getTempoSessaoMinutos() {
-		
-		if(this.getValidaAte() != null) {
-		Long minutos = (this.getValidaAte().toEpochSecond(ZoneOffset.UTC) - 
-				LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) / 60;
-		//pautaDto.setTempoSessaoEmMinutos(minutos);
-			return minutos;
-		}else {
+
+		if (this.getValidaAte() != null) {
+			return (this.getValidaAte().toEpochSecond(ZoneOffset.UTC)
+					- LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) / 60;
+		} else {
 			return null;
-		}		
+		}
 	}
-		
+
 	@Override
 	public String toString() {
 		return "Pauta [id=" + id + ", nome=" + nome + ", descricao=" + descricao + ", validaAte=" + validaAte

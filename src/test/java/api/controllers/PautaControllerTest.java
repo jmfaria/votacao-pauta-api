@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import api.dtos.PautaDto;
 import api.entities.Pauta;
-import api.repositories.PautaRepository;
 
 @TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest
@@ -62,7 +59,7 @@ public class PautaControllerTest {
 	public void testAbrirSessaoV1() throws Exception {
 
 		mvc.perform(MockMvcRequestBuilders.put("/api/v1/pautas/id/" + this.pauta.getId())
-				.content(this.gerarJsonRequisicaoPost())
+				.content(this.gerarJsonRequisicaoAbrirSessao())
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.id").value(this.pauta.getId()))
 				.andExpect(jsonPath("$.data.nome").value(this.pauta.getNome()))
@@ -82,6 +79,12 @@ public class PautaControllerTest {
 
 		return pauta;
 
+	}
+	
+	private String gerarJsonRequisicaoAbrirSessao() throws JsonProcessingException {
+
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(tempoValidade);
 	}
 
 	private String gerarJsonRequisicaoPost() throws JsonProcessingException {

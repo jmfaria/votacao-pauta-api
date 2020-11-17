@@ -14,7 +14,6 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 
-
 @Configuration
 @EnableJms
 public class JmsConfig {
