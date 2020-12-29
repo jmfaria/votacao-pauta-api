@@ -18,13 +18,14 @@ import api.dtos.VotacaoDto;
 @Table(name = "votacao")
 public class Votacao {
 
-	private Long Id;
+	private Long id;
 	private Pauta pauta;
 	private Associado associado;
 	private LocalTime votadoEm;
 	private String voto;
 
 	public Votacao() {
+		// construtor padrão
 	}
 	
 	public Votacao(VotacaoDto votacaoDto) {
@@ -38,11 +39,11 @@ public class Votacao {
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	@ManyToOne
@@ -75,7 +76,7 @@ public class Votacao {
 	}
 
 	@PrePersist
-	private void PrePersist() {
+	private void prePersist() {
 		this.votadoEm = LocalTime.now();
 	}
 
@@ -90,7 +91,7 @@ public class Votacao {
 
 	@Override
 	public String toString() {
-		return "Votacao [Id=" + Id + ", pauta=" + pauta + ", associado=" + associado + ", votadoEm=" + votadoEm
+		return "Votacao [Id=" + id + ", pauta=" + pauta + ", associado=" + associado + ", votadoEm=" + votadoEm
 				+ ", voto=" + voto + "]";
 	}
 

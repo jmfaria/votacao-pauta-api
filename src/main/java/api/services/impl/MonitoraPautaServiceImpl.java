@@ -38,7 +38,6 @@ public class MonitoraPautaServiceImpl {
 				try {					
 					
 					this.mensageriaService.publicarMensagemNaFila(
-//							this.votacaoService.resultadoVotacao(pauta.getId()).toString()
 							new ObjectMapper().writeValueAsString(
 									this.votacaoService.resultadoVotacao(pauta.getId())
 									)
@@ -46,7 +45,6 @@ public class MonitoraPautaServiceImpl {
 					
 				} catch (JsonProcessingException e) {					
 					log.error(e.getMessage());
-					e.printStackTrace();
 				}
 			}
 			

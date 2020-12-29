@@ -4,25 +4,27 @@ import api.entities.Votacao;
 
 public class VotacaoDto {
 	
-	private Long Id;
-	private Long IdPauta;
-	private Long IdAssociado;	
+	private Long id;
+	private Long idPauta;
+	private Long idAssociado;	
 	private String voto;
 	
-	public VotacaoDto() {}
+	public VotacaoDto() {
+		// construtor padrão		
+	}
 	
 	public VotacaoDto(Votacao votacao) {
-		this.Id = votacao.getId();
-		this.IdPauta = votacao.getPauta().getId();
-		this.IdAssociado = votacao.getAssociado().getId();
+		this.id = votacao.getId();
+		this.idPauta = votacao.getPauta().getId();
+		this.idAssociado = votacao.getAssociado().getId();
 		this.voto = votacao.getVoto();
 	}
 	
 	public Long getId() {
-		return Id;
+		return id;
 	}
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}	
 	
 	public String getVoto() {
@@ -34,24 +36,24 @@ public class VotacaoDto {
 	}
 	
 	public Long getIdPauta() {
-		return IdPauta;
+		return idPauta;
 	}
 
 	public void setIdPauta(Long idPauta) {
-		IdPauta = idPauta;
+		this.idPauta = idPauta;
 	}
 
 	public Long getIdAssociado() {
-		return IdAssociado;
+		return idAssociado;
 	}
 
 	public void setIdAssociado(Long idAssociado) {
-		IdAssociado = idAssociado;
+		this.idAssociado = idAssociado;
 	}
 
 	@Override
 	public String toString() {
-		return "VotacaoDto [Id=" + Id + ", IdPauta=" + IdPauta + ", IdAssociado=" + IdAssociado + ", voto=" + voto
+		return "VotacaoDto [Id=" + id + ", IdPauta=" + idPauta + ", IdAssociado=" + idAssociado + ", voto=" + voto
 				+ "]";
 	}
 

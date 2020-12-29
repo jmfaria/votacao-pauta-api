@@ -15,8 +15,6 @@ public class MensageriaServiceImpl implements MensageriaService {
 	@Autowired
     private JmsTemplate jmsTemplate;
 	
-	public MensageriaServiceImpl() {}
-
     @Override
 	public void publicarMensagemNaFila(String mensagem) {
     	

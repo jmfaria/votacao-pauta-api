@@ -20,6 +20,7 @@ import api.services.PautaService;
 public class PautaServiceImpl implements PautaService {
 
 	private static final Logger log = LoggerFactory.getLogger(PautaServiceImpl.class);
+	private static final String NOME_OBJETO = "Pauta";
 
 	@Autowired
 	private PautaRepository pautaRepository;	
@@ -31,7 +32,7 @@ public class PautaServiceImpl implements PautaService {
 	}
 
 	@Override
-	public Boolean estaAbertaParaVotacao(Long id) {
+	public boolean estaAbertaParaVotacao(Long id) {
 		return this.pautaRepository.findByIdAndValidaAteAfter(id, LocalDateTime.now()).isPresent();
 	}
 	
@@ -53,14 +54,15 @@ public class PautaServiceImpl implements PautaService {
 	@Override
 	public Pauta incluir(Pauta pauta) {
 		
+		
 		BindingResult result = new DataBinder(null).getBindingResult();
 		if (!(pauta.getNome() != null && pauta.getNome().isEmpty())
 				&& (pauta.getNome().length() < 5 || pauta.getNome().length() > 100)) {
-			result.addError(new ObjectError("Pauta", "Nome deve conter entre 5 e 100 caracteres."));
+			result.addError(new ObjectError(NOME_OBJETO, "Nome deve conter entre 5 e 100 caracteres."));
 		}
 
 		if (this.buscarPeloNome(pauta.getNome()).isPresent()) {
-			result.addError(new ObjectError("Pauta", "Já existe Pauta com esse nome."));
+			result.addError(new ObjectError(NOME_OBJETO, "Já existe Pauta com esse nome."));
 		}
 		
 		return this.pautaRepository.save(pauta);
@@ -78,18 +80,21 @@ public class PautaServiceImpl implements PautaService {
 		Optional<Pauta> pauta = this.buscarPorId(pautaRecebida.getId());			
 		
 		if (!pauta.isPresent()) {
-			result.addError(new ObjectError("Pauta", "Pauta inexistente."));
+			result.addError(new ObjectError(NOME_OBJETO, "Pauta inexistente."));
 		}else {
 			
-			//Atribui à pauta do contexto a validade da pauta criada atraves da requisição
+			// Atribui à pauta do contexto a validade da pauta criada atraves da requisição
 			pauta.get().setValidaAte(pautaRecebida.getValidaAte());
 		}
 
-		if (pauta.isPresent() && pauta.get().getEncerrada()) {
-			result.addError(new ObjectError("Pauta", "Pauta já encerrada."));
+		if (pauta.isPresent() && Boolean.TRUE.equals(pauta.get().getEncerrada())) {
+			result.addError(new ObjectError(NOME_OBJETO, "Pauta já encerrada."));
 		}
 
-		return this.pautaRepository.save(pauta.get());
+		if(pauta.isPresent())
+			return this.pautaRepository.save(pauta.get());
+		
+		return null;
 	}
 
 }

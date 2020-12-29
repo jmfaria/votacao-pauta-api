@@ -8,7 +8,9 @@ public class AssociadoDto {
 	private String nome;
 	private String cpf;
 	
-	public AssociadoDto() {}
+	public AssociadoDto() {
+		// construtor padrão
+	}
 	
 	public AssociadoDto(Associado associado) {
 		this.id = associado.getId();

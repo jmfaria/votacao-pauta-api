@@ -67,6 +67,20 @@ public class PautaControllerTest {
 				.andExpect(jsonPath("$.data.tempoSessaoEmMinutos").value(tempoValidade))
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
+	
+	@Order(3)
+	@Test
+	public void listarAtivas() throws Exception{
+		
+		mvc.perform(MockMvcRequestBuilders.get("/api/v1/pautas")				
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.data[0].id").value(this.pauta.getId()))
+				.andExpect(jsonPath("$.data[0].nome").value(this.pauta.getNome()))
+				.andExpect(jsonPath("$.data[0].descricao").value(this.pauta.getDescricao()))
+				.andExpect(jsonPath("$.data[0].tempoSessaoMinutos").value(tempoValidade))
+				.andExpect(jsonPath("$.errors").isEmpty());
+		
+	}
 
 	private Pauta gerarPauta() {
 

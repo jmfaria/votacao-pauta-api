@@ -10,7 +10,7 @@ public class PautaDto {
 	private Long tempoSessaoEmMinutos;
 	
 	public PautaDto() {
-		
+		// construtor padrão
 	}
 	
 	public PautaDto(Pauta pauta) {

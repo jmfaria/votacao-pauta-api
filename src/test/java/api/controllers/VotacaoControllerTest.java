@@ -9,6 +9,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,7 @@ import api.services.VotacaoService;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@TestMethodOrder(OrderAnnotation.class)
 public class VotacaoControllerTest {
 
 	@Autowired
@@ -62,12 +66,23 @@ public class VotacaoControllerTest {
 		BDDMockito.given(this.votacaoService.votar(Mockito.any(Votacao.class))).willReturn(this.gerarVotacao());
 	}
 
+	@Order(1)
 	@Test
-	public void testVotar() throws Exception {
+	public void votarV1() throws Exception {
 
 		mvc.perform(MockMvcRequestBuilders.post("/api/v1/votacao/").content(this.gerarJsonRequisicaoPost())
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.id").value(1L)).andExpect(jsonPath("$.errors").isEmpty());
+	}
+	
+	@Order(2)
+	@Test
+	public void resultadoV1() throws Exception {
+		
+		mvc.perform(MockMvcRequestBuilders.get("/api/v1/votacao/resultado/" + this.gerarVotacao().getId())
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.votosSim").value(0)).andExpect(jsonPath("$.errors").isEmpty());
+		
 	}
 
 	private String gerarJsonRequisicaoPost() throws JsonProcessingException {

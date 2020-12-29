@@ -20,7 +20,8 @@ public class Associado {
 	private String nome;
 	private String cpf;
 	
-	public Associado() {		
+	public Associado() {
+		// construtor padrão
 	}
 	
 	public Associado(AssociadoDto associadoDto) {

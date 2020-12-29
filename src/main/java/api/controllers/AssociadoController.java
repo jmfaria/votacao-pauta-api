@@ -30,14 +30,11 @@ public class AssociadoController {
 	@Autowired
 	private AssociadoService associadoService;
 
-	public AssociadoController() {
-	}
-
 	@PostMapping("/api/v1/associados")
 	public ResponseEntity<Response<AssociadoDto>> incluirV1(@Valid @RequestBody AssociadoDto associadoDto) {
 
 		log.info("Incluindo Associado {}", associadoDto.getNome());
-		Response<AssociadoDto> response = new Response<AssociadoDto>();
+		Response<AssociadoDto> response = new Response<>();
 
 		Associado associado = new Associado(associadoDto);
 		this.associadoService.incluir(associado);
@@ -50,7 +47,7 @@ public class AssociadoController {
 	public ResponseEntity<Response<List<Associado>>> listarV1() {
 
 		log.info("Listando Associados");
-		Response<List<Associado>> response = new Response<List<Associado>>();
+		Response<List<Associado>> response = new Response<>();
 		List<Associado> associados = this.associadoService.listar();
 
 		response.setData(associados);
@@ -61,10 +58,12 @@ public class AssociadoController {
 	public ResponseEntity<Response<AssociadoDto>> buscarPorCpfV1(@PathVariable("cpf") String cpf) {
 
 		log.info("Buscando Associado por CPF: {}", cpf);
-		Response<AssociadoDto> response = new Response<AssociadoDto>();
+		Response<AssociadoDto> response = new Response<>();
 		Optional<Associado> associado = this.associadoService.buscarPorCpf(cpf);
 
-		response.setData(new AssociadoDto(associado.get()));
+		if(associado.isPresent())
+			response.setData(new AssociadoDto(associado.get()));
+		
 		return ResponseEntity.ok(response);
 	}
 }

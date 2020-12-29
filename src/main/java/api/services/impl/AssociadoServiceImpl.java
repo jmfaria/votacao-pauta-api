@@ -44,7 +44,7 @@ public class AssociadoServiceImpl implements AssociadoService {
 		
 		BindingResult result = new DataBinder(null).getBindingResult();
 		
-		if (associado.getCpf() != null && !CpfUtils.ValidarCPF(associado.getCpf())) {
+		if (associado.getCpf() != null && !CpfUtils.validarCPF(associado.getCpf())) {
 			result.addError(new ObjectError("Associado", "CPF inválido."));
 			
 		} else if (this.buscarPorCpf(associado.getCpf()).isPresent()) {

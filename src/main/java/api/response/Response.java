@@ -10,9 +10,6 @@ public class Response<T> {
 	private T data;
 	private List<Erro> errors;
 
-	public Response() {
-	}
-
 	public T getData() {
 		return data;
 	}
@@ -23,7 +20,7 @@ public class Response<T> {
 
 	public List<Erro> getErrors() {
 		if (this.errors == null) {
-			this.errors = new ArrayList<Erro>();
+			this.errors = new ArrayList<>();
 		}
 		return errors;
 	}

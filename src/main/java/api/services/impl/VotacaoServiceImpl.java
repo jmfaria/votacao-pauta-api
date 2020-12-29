@@ -42,47 +42,26 @@ public class VotacaoServiceImpl implements VotacaoService {
 
 		Optional<Associado> associado = this.associadoService.buscarPorId(votacao.getAssociado().getId());
 		Optional<Pauta> pauta = this.pautaService.buscarPorId(votacao.getPauta().getId());
-//		Votacao votacao = new Votacao(votacaoDto, associado, pauta);
-//		BindingResult result = new DataBinder(null).getBindingResult();
 
-//		if (votacao.getAssociado() == null) {
-//			result.addError(new ObjectError("Votação de Pauta", "Associado não existe."));
-//			
-//		} else if (votacao.getPauta() == null) {
-//			result.addError(new ObjectError("Votação de Pauta", "Pauta não existe."));
-//			
-//		} else 
-
-		if (!this.pautaService.estaAbertaParaVotacao(pauta.get().getId())) {
-			// result.addError(new ObjectError("Votação de Pauta", "Pauta não aberta ou já
-			// encerrada para votação."));
-			// System.out.println("1");
+		if (pauta.isPresent() && !this.pautaService.estaAbertaParaVotacao(pauta.get().getId())) {
+			
 			throw new PautaNaoAbertaOuJaFechadaException();
 
 		} else if (associado.isPresent() && pauta.isPresent()
 				&& this.jaVotou(associado.get(), pauta.get()).isPresent()) {
 
-//				System.out.println("A e P: " + (associado.isPresent() && pauta.isPresent()));
-//				System.out.println("Ja votou: " + this.jaVotou(associado.get(), pauta.get()).isPresent());
-//				
-//			result.addError(new ObjectError("Votação de Pauta", "O Associado já votou nessa Pauta."));
-//			System.out.println("2");
 			throw new AssociadoJaVotouPautaException();
 
-		} else if (this.apiPermissaoVotoService.associadoComPermissaoParaVotar(associado.get().getCpf())
-				.equalsIgnoreCase("UNABLE_TO_VOTE")) {
-
-//			result.addError(new ObjectError("Votação de Pauta", "A API externa não permitiu o Associado votar."));
-//			System.out.println("3");
+		} else if (associado.isPresent() && this.apiPermissaoVotoService
+				.associadoComPermissaoParaVotar(associado.get().getCpf()).equalsIgnoreCase("UNABLE_TO_VOTE")) {
 
 			throw new ApiExternalNaoPermitiuVotoException();
 
 		}
 
-		if (votacao.getVoto() == null || (!votacao.getVoto().equalsIgnoreCase("sim")
-				&& !votacao.getVoto().equalsIgnoreCase("não"))) {
-//			result.addError(new ObjectError("Votação de Pauta",
-//					"O voto deve ser expresso com as palavras \"SIM\" ou \"Não\"."));
+		if (votacao.getVoto() == null
+				|| (!votacao.getVoto().equalsIgnoreCase("sim") && !votacao.getVoto().equalsIgnoreCase("não"))) {
+
 			throw new VotoNaoAceitoException();
 		}
 
@@ -90,8 +69,8 @@ public class VotacaoServiceImpl implements VotacaoService {
 	}
 
 	@Override
-	public Optional<Votacao> jaVotou(Associado Associado, Pauta Pauta) {
-		return this.votacaoRepository.findByAssociadoAndPauta(Associado, Pauta);
+	public Optional<Votacao> jaVotou(Associado associado, Pauta pauta) {
+		return this.votacaoRepository.findByAssociadoAndPauta(associado, pauta);
 	}
 
 	@Override
@@ -104,21 +83,21 @@ public class VotacaoServiceImpl implements VotacaoService {
 			result.addError(new ObjectError("Votação de Pauta", "Pauta não existe."));
 		}
 
-		if (this.pautaService.estaAbertaParaVotacao(pauta.get().getId())) {
+		if (pauta.isPresent() && this.pautaService.estaAbertaParaVotacao(pauta.get().getId())) {
 			result.addError(new ObjectError("Votação de Pauta", "A votação para essa Pauta ainda não foi encerrada."));
 		}
 
-		System.out.println("Id: " + pauta.get().getId());
+		if (pauta.isPresent()) {
+			ResultadoVotacao resultadoVotacao = new ResultadoVotacao();
+			resultadoVotacao.setVotosSim(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "SIM"));
+			resultadoVotacao.setVotosNao(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "NÃO"));
+			resultadoVotacao.setVotosTotal(resultadoVotacao.getVotosSim() + resultadoVotacao.getVotosNao());
+			resultadoVotacao.setPauta(pauta.get());
 
-		ResultadoVotacao resultadoVotacao = new ResultadoVotacao();
-		resultadoVotacao.setVotosSim(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "SIM"));
-		resultadoVotacao.setVotosNao(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "NÃO"));
-		resultadoVotacao.setVotosTotal(resultadoVotacao.getVotosSim() + resultadoVotacao.getVotosNao());
-		resultadoVotacao.setPauta(pauta.get());
+			return resultadoVotacao;
+		}
 
-		System.out.println("Resultado: " + resultadoVotacao.toString());
-
-		return resultadoVotacao;
+		return null;
 	}
 
 }

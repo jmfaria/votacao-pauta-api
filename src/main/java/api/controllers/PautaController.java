@@ -34,7 +34,7 @@ public class PautaController {
 	public ResponseEntity<Response<PautaDto>> incluirV1(@Valid @RequestBody PautaDto pautaDto) {
 
 		log.info("Incluindo Pauta {}", pautaDto.getNome());
-		Response<PautaDto> response = new Response<PautaDto>();
+		Response<PautaDto> response = new Response<>();
 
 		Pauta pauta = new Pauta(pautaDto);
 		this.pautaService.incluir(pauta);
@@ -48,7 +48,7 @@ public class PautaController {
 			@Valid @RequestBody Long tempoDaSessao) {
 
 		log.info("Abrindo sessão para Pauta id: {}", id);
-		Response<PautaDto> response = new Response<PautaDto>();
+		Response<PautaDto> response = new Response<>();
 
 		Pauta pauta = this.pautaService.abrirSessaoParaVotacao(new Pauta(id, tempoDaSessao));
 		response.setData(new PautaDto(pauta));
@@ -58,9 +58,9 @@ public class PautaController {
 	@GetMapping("/api/v1/pautas")
 	public ResponseEntity<Response<List<Pauta>>> listarAtivas() {
 
-		Response<List<Pauta>> response = new Response<List<Pauta>>();
+		Response<List<Pauta>> response = new Response<>();
 		List<Pauta> pautasAtivas = this.pautaService.listarPautasAtivas();
-
+		
 		response.setData(pautasAtivas);
 		return ResponseEntity.ok(response);
 	}

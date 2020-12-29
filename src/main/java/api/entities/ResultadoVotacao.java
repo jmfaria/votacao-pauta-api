@@ -6,9 +6,7 @@ public class ResultadoVotacao {
 	private Long votosTotal;
 	private Long votosSim;
 	private Long votosNao;
-	
-	public ResultadoVotacao() {}
-	
+			
 	public Long getVotosSim() {
 		return votosSim;
 	}

@@ -24,7 +24,7 @@ public class Pauta {
 	private Boolean encerrada = false;
 
 	public Pauta() {
-
+		// construtor padrão
 	}
 
 	public Pauta(Long id) {

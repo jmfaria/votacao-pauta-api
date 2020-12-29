@@ -11,7 +11,7 @@ public interface VotacaoService {
 	
 	Votacao votar(Votacao votacao);
 	
-	Optional<Votacao> jaVotou(Associado Associado, Pauta Pauta);
+	Optional<Votacao> jaVotou(Associado associado, Pauta pauta);
 	
 	ResultadoVotacao resultadoVotacao(Long idPauta);
 
