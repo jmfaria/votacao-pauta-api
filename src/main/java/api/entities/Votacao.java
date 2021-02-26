@@ -1,6 +1,6 @@
 package api.entities;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,7 +44,7 @@ public class Votacao {
 	private Associado associado;
 	
 	@Column(name = "votado_em")
-	private LocalTime votadoEm;
+	private LocalDateTime votadoEm;
 	
 	@Column(name = "voto")
 	private String voto;
@@ -58,7 +58,7 @@ public class Votacao {
 
 	@PrePersist
 	private void prePersist() {
-		this.votadoEm = LocalTime.now();
+		this.votadoEm = LocalDateTime.now();
 	}
 
 }

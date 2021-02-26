@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import api.dtos.AssociadoDto;
@@ -21,12 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequestMapping(value="/api")
 public class AssociadoController {
 
 	@Autowired
 	private AssociadoService associadoService;
 
-	@PostMapping("/api/v1/associados")
+	@PostMapping("v1/associados")
 	public ResponseEntity<Response<AssociadoDto>> incluirV1(@Valid @RequestBody AssociadoDto associadoDto) {
 
 		log.info("Incluindo Associado {}", associadoDto.getNome());
@@ -39,7 +41,7 @@ public class AssociadoController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/api/v1/associados")
+	@GetMapping("v1/associados")
 	public ResponseEntity<Response<List<Associado>>> listarV1() {
 
 		log.info("Listando Associados");
@@ -50,7 +52,7 @@ public class AssociadoController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping(value = "/api/v1/associados/cpf/{cpf}")
+	@GetMapping(value = "v1/associados/cpf/{cpf}")
 	public ResponseEntity<Response<AssociadoDto>> buscarPorCpfV1(@PathVariable("cpf") String cpf) {
 
 		log.info("Buscando Associado por CPF: {}", cpf);

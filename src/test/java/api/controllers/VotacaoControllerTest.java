@@ -4,14 +4,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +133,7 @@ public class VotacaoControllerTest {
 		votacao.setAssociado(new Associado(1L));
 		votacao.setPauta(new Pauta(1L));
 		votacao.setVoto("SIM");
-		votacao.setVotadoEm(LocalTime.now());
+		votacao.setVotadoEm(LocalDateTime.now());
 
 		return votacao;
 	}

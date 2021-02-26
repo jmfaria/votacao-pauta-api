@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import api.dtos.ResultadoVotacaoDto;
@@ -19,12 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequestMapping(value="/api")
 public class VotacaoController {
 
 	@Autowired
 	private VotacaoService votacaoService;
 	
-	@PostMapping("/api/v1/votacao")
+	@PostMapping("v1/votacao")
 	public ResponseEntity<Response<VotacaoDto>> votarV1(@Valid @RequestBody VotacaoDto votacaoDto) {
 
 		Response<VotacaoDto> response = new Response<>();
@@ -35,7 +37,7 @@ public class VotacaoController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/api/v1/votacao/resultado/{id}")
+	@GetMapping("v1/votacao/resultado/{id}")
 	public ResponseEntity<Response<ResultadoVotacaoDto>> resultadoV1(@PathVariable("id") Long id) {
 
 		log.info("Buscando resultado da Votação de Pauta id: {}", id);
