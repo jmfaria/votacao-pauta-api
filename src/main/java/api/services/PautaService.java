@@ -3,13 +3,16 @@ package api.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import api.entities.Pauta;
 
 public interface PautaService {
 	
 	boolean estaAbertaParaVotacao(Long id);
 		
-	List<Pauta> listarPautasAtivas();
+	Page<Pauta> listarPautasAtivas(Pageable pageable);
 	
 	Optional<Pauta> buscarPorId(Long id);
 	
@@ -22,4 +25,6 @@ public interface PautaService {
 	Pauta finalizarPauta(Pauta pauta);
 
 	List<Pauta> listarPautasNaoEncerradas();
+	
+	Page<Pauta> listarTodas(Pageable pageRequest);
 }

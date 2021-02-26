@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,9 +22,8 @@ public interface PautaRepository extends JpaRepository<Pauta, Long> {
 	Optional<Pauta> findByNome(String nome); 
 	
 	@Query(value = "SELECT p FROM Pauta p WHERE p.validaAte > :data AND p.encerrada = FALSE ", nativeQuery = false)
-	List<Pauta> findByValidaAteAfter(@Param("data")LocalDateTime data);	
+	Page<Pauta> findByValidaAteAfter(@Param("data")LocalDateTime data, Pageable pageable);	
 	
 	@Query(value = "SELECT p FROM Pauta p WHERE p.validaAte IS NOT NULL AND p.encerrada = FALSE ", nativeQuery = false)
-	List<Pauta> findByNotEncerrada();
-			
+	List<Pauta> findByNotEncerrada();			
 }
