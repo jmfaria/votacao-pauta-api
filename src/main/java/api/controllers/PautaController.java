@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import api.dtos.PautaDto;
@@ -21,12 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequestMapping(value="/api")
 public class PautaController {
 
 	@Autowired
 	private PautaService pautaService;
 
-	@PostMapping("/api/v1/pautas")
+	@PostMapping("v1/pautas")
 	public ResponseEntity<Response<PautaDto>> incluirV1(@Valid @RequestBody PautaDto pautaDto) {
 
 		log.info("Incluindo Pauta {}", pautaDto.getNome());
@@ -39,7 +41,7 @@ public class PautaController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PutMapping("/api/v1/pautas/id/{id}")
+	@PutMapping("v1/pautas/id/{id}")
 	public ResponseEntity<Response<PautaDto>> abriSessaoV1(@Valid @PathVariable("id") Long id,
 			@Valid @RequestBody Long tempoDaSessao) {
 
@@ -51,7 +53,7 @@ public class PautaController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/api/v1/pautas")
+	@GetMapping("v1/pautas")
 	public ResponseEntity<Response<Page<Pauta>>> listarAtivas(Pageable pageable) {
 
 		Response<Page<Pauta>> response = new Response<>();
@@ -61,7 +63,7 @@ public class PautaController {
 		return ResponseEntity.ok(response);
 	}
 	
-	@GetMapping("/api/v2/pautas")
+	@GetMapping("v2/pautas")
 	public ResponseEntity<Response<Page<Pauta>>> listarTodas(
 			Pageable pageable
 			) {
