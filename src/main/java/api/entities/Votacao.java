@@ -1,6 +1,6 @@
 package api.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ public class Votacao {
 	private Long id;
 	private Pauta pauta;
 	private Associado associado;
-	private LocalDateTime votadoEm;
+	private LocalTime votadoEm;
 	private String voto;
 
 	public Votacao() {
@@ -67,17 +67,17 @@ public class Votacao {
 	}
 
 	@Column(name = "votado_em")
-	public LocalDateTime getVotadoEm() {
+	public LocalTime getVotadoEm() {
 		return votadoEm;
 	}
 
-	public void setVotadoEm(LocalDateTime votadoEm) {
+	public void setVotadoEm(LocalTime votadoEm) {
 		this.votadoEm = votadoEm;
 	}
 
 	@PrePersist
-	private void PrePersist() {
-		this.votadoEm = LocalDateTime.now();
+	private void prePersist() {
+		this.votadoEm = LocalTime.now();
 	}
 
 	@Column(name = "voto")
