@@ -1,14 +1,11 @@
 package api.controllers;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +17,11 @@ import api.dtos.PautaDto;
 import api.entities.Pauta;
 import api.response.Response;
 import api.services.PautaService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
-@CrossOrigin("*")
 public class PautaController {
-
-	private static final Logger log = LoggerFactory.getLogger(PautaController.class);
 
 	@Autowired
 	private PautaService pautaService;
@@ -56,10 +52,22 @@ public class PautaController {
 	}
 
 	@GetMapping("/api/v1/pautas")
-	public ResponseEntity<Response<List<Pauta>>> listarAtivas() {
+	public ResponseEntity<Response<Page<Pauta>>> listarAtivas(Pageable pageable) {
 
-		Response<List<Pauta>> response = new Response<>();
-		List<Pauta> pautasAtivas = this.pautaService.listarPautasAtivas();
+		Response<Page<Pauta>> response = new Response<>();
+		Page<Pauta> pautasAtivas = this.pautaService.listarPautasAtivas(pageable);
+		
+		response.setData(pautasAtivas);
+		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping("/api/v2/pautas")
+	public ResponseEntity<Response<Page<Pauta>>> listarTodas(
+			Pageable pageable
+			) {
+
+		Response<Page<Pauta>> response = new Response<>();
+		Page<Pauta> pautasAtivas = this.pautaService.listarTodas(pageable);
 		
 		response.setData(pautasAtivas);
 		return ResponseEntity.ok(response);

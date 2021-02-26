@@ -5,11 +5,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +17,11 @@ import api.dtos.AssociadoDto;
 import api.entities.Associado;
 import api.response.Response;
 import api.services.AssociadoService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
-@CrossOrigin("*")
 public class AssociadoController {
-
-	private static final Logger log = LoggerFactory.getLogger(AssociadoController.class);
 
 	@Autowired
 	private AssociadoService associadoService;
@@ -38,7 +34,7 @@ public class AssociadoController {
 
 		Associado associado = new Associado(associadoDto);
 		this.associadoService.incluir(associado);
-
+		
 		response.setData(new AssociadoDto(associado));
 		return ResponseEntity.ok(response);
 	}

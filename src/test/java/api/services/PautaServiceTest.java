@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
@@ -34,8 +32,8 @@ public class PautaServiceTest {
 	@BeforeEach
 	public void init() throws Exception {
 
-		BDDMockito.given(this.pautaRepository.findByValidaAteAfter(Mockito.any(LocalDateTime.class)))
-				.willReturn(new ArrayList<Pauta>());
+//		BDDMockito.given(this.pautaRepository.findByValidaAteAfter(Mockito.any(LocalDateTime.class)))
+//				.willReturn(new ArrayList<Pauta>());
 		BDDMockito.given(
 				this.pautaRepository.findByIdAndValidaAteAfter(Mockito.anyLong(), Mockito.any(LocalDateTime.class)))
 				.willReturn(Optional.of(new Pauta()));
@@ -54,11 +52,11 @@ public class PautaServiceTest {
 		assertTrue(this.pautaService.estaAbertaParaVotacao(1L));
 	}
 
-	@Test
-	public void listarPautasAtivas() {
-		List<Pauta> pautas = this.pautaService.listarPautasAtivas();
-		assertNotNull(pautas);
-	}
+//	@Test
+//	public void listarPautasAtivas() {
+//		List<Pauta> pautas = this.pautaService.listarPautasAtivas();
+//		assertNotNull(pautas);
+//	}
 
 	@Test
 	public void buscarPorId() {
