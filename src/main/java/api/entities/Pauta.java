@@ -12,20 +12,40 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import api.dtos.PautaDto;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+
+@NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 @Entity
 @Table(name = "pauta")
 public class Pauta {
 
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	
+	@Column(name = "nome")
 	private String nome;
+	
+	@Column(name = "descricao")
 	private String descricao;
+	
+	@Column(name = "valida_ate")
 	private LocalDateTime validaAte;
+	
+	@Column(name = "encerrada")
 	private Boolean encerrada = false;
-
-	public Pauta() {
-		// construtor padrão
-	}
 
 	public Pauta(Long id) {
 		this.id = id;
@@ -52,54 +72,6 @@ public class Pauta {
 		this.validaAte = this.definirTempoDeSessao(pautaDto.getTempoSessaoEmMinutos());
 	}	
 	
-
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	@Column(name = "nome")
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	@Column(name = "descricao")
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	@Column(name = "valida_ate")
-	public LocalDateTime getValidaAte() {
-		return validaAte;
-	}
-
-	public void setValidaAte(LocalDateTime validaAte) {
-		this.validaAte = validaAte;
-	}
-
-	@Column(name = "encerrada")
-	public Boolean getEncerrada() {
-		return encerrada;
-	}
-
-	public void setEncerrada(Boolean encerrada) {
-		this.encerrada = encerrada;
-	}
-
 	private LocalDateTime definirTempoDeSessao(Long tempoDaSessao) {
 
 		return (tempoDaSessao != null && tempoDaSessao > 0 ? LocalDateTime.now().plusMinutes(tempoDaSessao)
@@ -115,12 +87,6 @@ public class Pauta {
 		} else {
 			return null;
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "Pauta [id=" + id + ", nome=" + nome + ", descricao=" + descricao + ", validaAte=" + validaAte
-				+ ", encerrada=" + encerrada + "]";
 	}
 
 }

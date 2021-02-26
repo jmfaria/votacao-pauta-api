@@ -2,11 +2,8 @@ package api.controllers;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +15,11 @@ import api.dtos.VotacaoDto;
 import api.entities.Votacao;
 import api.response.Response;
 import api.services.VotacaoService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
-@CrossOrigin("*")
 public class VotacaoController {
-
-	private static Logger log = LoggerFactory.getLogger(VotacaoController.class);
 
 	@Autowired
 	private VotacaoService votacaoService;

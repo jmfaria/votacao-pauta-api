@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
@@ -24,11 +22,11 @@ import api.services.impl.exceptions.ApiExternalNaoPermitiuVotoException;
 import api.services.impl.exceptions.AssociadoJaVotouPautaException;
 import api.services.impl.exceptions.PautaNaoAbertaOuJaFechadaException;
 import api.services.impl.exceptions.VotoNaoAceitoException;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
-
-	private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,

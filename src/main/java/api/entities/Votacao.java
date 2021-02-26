@@ -13,21 +13,42 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import api.dtos.VotacaoDto;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 @Entity
 @Table(name = "votacao")
 public class Votacao {
 
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	
+	@ManyToOne
+	@JoinColumn(name = "pauta_id")
 	private Pauta pauta;
+	
+	@ManyToOne
+	@JoinColumn(name = "associado_id")
 	private Associado associado;
+	
+	@Column(name = "votado_em")
 	private LocalTime votadoEm;
+	
+	@Column(name = "voto")
 	private String voto;
 
-	public Votacao() {
-		// construtor padrão
-	}
-	
 	public Votacao(VotacaoDto votacaoDto) {
 		
 		this.associado = new Associado(votacaoDto.getIdAssociado());
@@ -35,64 +56,9 @@ public class Votacao {
 		this.voto = votacaoDto.getVoto().toUpperCase();
 	}
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "pauta_id")
-	public Pauta getPauta() {
-		return pauta;
-	}
-
-	public void setPauta(Pauta pauta) {
-		this.pauta = pauta;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "associado_id")
-	public Associado getAssociado() {
-		return associado;
-	}
-
-	public void setAssociado(Associado associado) {
-		this.associado = associado;
-	}
-
-	@Column(name = "votado_em")
-	public LocalTime getVotadoEm() {
-		return votadoEm;
-	}
-
-	public void setVotadoEm(LocalTime votadoEm) {
-		this.votadoEm = votadoEm;
-	}
-
 	@PrePersist
 	private void prePersist() {
 		this.votadoEm = LocalTime.now();
-	}
-
-	@Column(name = "voto")
-	public String getVoto() {
-		return voto;
-	}
-
-	public void setVoto(String voto) {
-		this.voto = voto;
-	}
-
-	@Override
-	public String toString() {
-		return "Votacao [Id=" + id + ", pauta=" + pauta + ", associado=" + associado + ", votadoEm=" + votadoEm
-				+ ", voto=" + voto + "]";
 	}
 
 }

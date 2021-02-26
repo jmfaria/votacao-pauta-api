@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
@@ -15,11 +15,12 @@ import org.springframework.validation.ObjectError;
 import api.entities.Pauta;
 import api.repositories.PautaRepository;
 import api.services.PautaService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class PautaServiceImpl implements PautaService {
 
-	private static final Logger log = LoggerFactory.getLogger(PautaServiceImpl.class);
 	private static final String NOME_OBJETO = "Pauta";
 
 	@Autowired
@@ -42,8 +43,13 @@ public class PautaServiceImpl implements PautaService {
 	}
 
 	@Override
-	public List<Pauta> listarPautasAtivas() {
-		return this.pautaRepository.findByValidaAteAfter(LocalDateTime.now());
+	public Page<Pauta> listarPautasAtivas(Pageable pageable) {
+		return this.pautaRepository.findByValidaAteAfter(LocalDateTime.now(), pageable);
+	}
+	
+	@Override
+	public Page<Pauta> listarTodas(Pageable pageRequest) {
+		return this.pautaRepository.findAll(pageRequest);
 	}
 
 	@Override

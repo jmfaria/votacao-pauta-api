@@ -1,16 +1,24 @@
 package api.dtos;
 
 import api.entities.ResultadoVotacao;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class ResultadoVotacaoDto {
 
 	private long votosTotal;
 	private long votosSim;
 	private long votosNao;
-
-	public ResultadoVotacaoDto() {
-		// construtor padrão
-	}
 
 	public ResultadoVotacaoDto(ResultadoVotacao resultadoVotacao) {
 
@@ -20,39 +28,4 @@ public class ResultadoVotacaoDto {
 			this.votosTotal = resultadoVotacao.getVotosTotal();
 		}
 	}
-
-	public Long getVotosSim() {
-		return votosSim;
-	}
-
-	public void setVotosSim(Long votosSim) {
-		this.votosSim = votosSim;
-	}
-
-	public Long getVotosNao() {
-		return votosNao;
-	}
-
-	public void seVotostNao(Long votosNao) {
-		this.votosNao = votosNao;
-	}
-
-	public Long getVotosTotal() {
-		return votosTotal;
-	}
-
-	public void setVotosTotal(Long votosTotal) {
-		this.votosTotal = votosTotal;
-	}
-
-	public void setVotosNao(Long votosNao) {
-		this.votosNao = votosNao;
-	}
-
-	@Override
-	public String toString() {
-		return "Resultado: Total de votos: " + this.votosTotal + " Sim(" + this.votosSim + ") - Não(" + this.votosNao
-				+ ")";
-	}
-
 }

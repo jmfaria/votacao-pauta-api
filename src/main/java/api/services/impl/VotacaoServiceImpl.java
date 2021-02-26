@@ -21,6 +21,7 @@ import api.services.impl.exceptions.ApiExternalNaoPermitiuVotoException;
 import api.services.impl.exceptions.AssociadoJaVotouPautaException;
 import api.services.impl.exceptions.PautaNaoAbertaOuJaFechadaException;
 import api.services.impl.exceptions.VotoNaoAceitoException;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class VotacaoServiceImpl implements VotacaoService {

@@ -68,8 +68,8 @@ public class PautaControllerTest {
 				.andExpect(jsonPath("$.errors").isEmpty());
 	}
 	
-	@Order(3)
-	@Test
+//	@Order(3)
+//	@Test
 	public void listarAtivas() throws Exception{
 		
 		mvc.perform(MockMvcRequestBuilders.get("/api/v1/pautas")				
