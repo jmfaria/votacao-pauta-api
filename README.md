@@ -8,7 +8,7 @@ Caso contrário, alterar o valor da propriedade "spring.datasource.url" no arqui
 Obs.: O esquema "votacao_pauta" deve ser criado manualmente e o usuário de acesso ao banco deve possuir permissão para execução de comandos DML nesse esquema.
 
 ### Swagger
-Com a aplicação em execução, estando o valor da propriedade "spring.profiles.active" no arquivo "application.properties" como "dev", acesse o endereço http://localhost:8080/swagger-ui.html. Podendo a partir desse, fazer uso da API de Votação de Pauta.
+Com a aplicação em execução, estando o valor da propriedade "spring.profiles.active" no arquivo "application.properties" como "dev", acesse o endereço http://localhost:8080/swagger-ui/index.html. Podendo a partir desse, fazer uso da API de Votação de Pauta.
 
 ### Apache ActiveMQ
 Serviço do Apache ActiveMQ localmente em execução ouvindo na porta tcp://localhost:61616, podendo ser alterada essa configuração, através da propriedade "spring.activemq.broker-url" no arquivo "application.properties".
