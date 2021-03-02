@@ -95,10 +95,10 @@
 			<version>3.0.0</version>
 		</dependency>
 
-		<!-- ActiveMQ -->
+		<!-- Kafka -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-activemq</artifactId>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
