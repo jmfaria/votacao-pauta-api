@@ -15,7 +15,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Slf4j
 @Profile("dev")
 @Configuration
-//@EnableSwagger2
 public class SwaggerConfig {
 
 	@Bean
