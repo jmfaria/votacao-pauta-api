@@ -1,0 +1,87 @@
+version: '3.6'
+services:
+  zookeeper:
+    restart: always
+    image: confluentinc/cp-zookeeper:5.2.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+    ports:
+      - "2181:2181"
+    networks:
+      - localnet
+      
+  kafka:    
+    hostname: kafka
+    restart: always
+    image: confluentinc/cp-kafka:5.2.1
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks:
+      - localnet
+  
+  mongo-express:
+    restart: always
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: mongouser
+      ME_CONFIG_BASICAUTH_PASSWORD: mongopass
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mongoadmin
+    links:
+      - mongo
+    networks:
+      - localnet
+  mongo:
+    restart: always
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin 
+      MONGO_INITDB_ROOT_PASSWORD: mongoadmin
+    ports:
+      - "27017:27017"
+    volumes:
+      - "mongodbdata:/data"
+    networks:
+      - localnet
+
+  backend-v1:  
+    image: backend-v1:0.1
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /
+    environment:
+      TZ: America/Sao_Paulo
+    ports:
+      - "8080:8080" 
+    command: mvn spring-boot:run
+    depends_on:
+      - db
+      - jms
+      - kafka
+      - mongo-express
+    networks:
+      - localnet
+volumes:
+  mongodbdata:
+    external: true  
+networks:
+    localnet:
+        driver: bridge
