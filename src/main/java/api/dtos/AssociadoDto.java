@@ -1,5 +1,7 @@
 package api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import api.entities.Associado;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -16,6 +18,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class AssociadoDto {
 
+    @JsonIgnore
 	private String id;
 	private String nome;
 	private String cpf;
