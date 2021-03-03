@@ -40,6 +40,8 @@ public class PautaControllerTest {
 	@BeforeEach
 	public void init() {
 		this.pauta = gerarPauta();
+		
+		//Mock retorno objeto criado
 	}
 	
 	@Order(1)
@@ -73,7 +75,8 @@ public class PautaControllerTest {
 	public void listarAtivas() throws Exception{
 		
 		mvc.perform(MockMvcRequestBuilders.get("/api/v1/pautas")				
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data[0].id").value(this.pauta.getId()))
 				.andExpect(jsonPath("$.data[0].nome").value(this.pauta.getNome()))
 				.andExpect(jsonPath("$.data[0].descricao").value(this.pauta.getDescricao()))
@@ -86,7 +89,7 @@ public class PautaControllerTest {
 
 		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(tempoValidade);
 		Pauta pauta = new Pauta();
-		pauta.setId(1L);
+		pauta.setId("1");
 		pauta.setNome("Nome da Pauta1");
 		pauta.setDescricao("Descrição da Pauta1");
 		pauta.setValidaAte(localDateTime);
@@ -104,7 +107,7 @@ public class PautaControllerTest {
 	private String gerarJsonRequisicaoPost() throws JsonProcessingException {
 
 		PautaDto pautaDto = new PautaDto();
-		pautaDto.setId(null);
+		pautaDto.setId("1");
 		pautaDto.setNome(this.pauta.getNome());
 		pautaDto.setDescricao(this.pauta.getDescricao());
 		pautaDto.setTempoSessaoEmMinutos(tempoValidade);

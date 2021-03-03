@@ -6,13 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.DataBinder;
-import org.springframework.validation.ObjectError;
 
 import api.entities.Associado;
 import api.repositories.AssociadoRepository;
 import api.services.AssociadoService;
+import api.services.impl.exceptions.AssociadoCpfJaCadastradoException;
+import api.services.impl.exceptions.CpfInvalidoException;
 import api.utils.CpfUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +30,7 @@ public class AssociadoServiceImpl implements AssociadoService {
 	}
 	
 	@Override
-	public Optional<Associado> buscarPorId(Long id) {
+	public Optional<Associado> buscarPorId(String id) {
 		
 		return this.associadoRepository.findById(id);
 		
@@ -40,14 +39,13 @@ public class AssociadoServiceImpl implements AssociadoService {
 	@Override
 	public Associado incluir(Associado associado) {
 		
-		BindingResult result = new DataBinder(null).getBindingResult();
-		
 		if (associado.getCpf() != null && !CpfUtils.validarCPF(associado.getCpf())) {
-			result.addError(new ObjectError("Associado", "CPF inválido."));
+			
+			throw new CpfInvalidoException();
 			
 		} else if (this.buscarPorCpf(associado.getCpf()).isPresent()) {
-			result.addError(new ObjectError("Associado", "Associado com esse CPF já foi incluído."));
 			
+			throw new AssociadoCpfJaCadastradoException();
 		}
 		
 		return this.associadoRepository.save(associado);		

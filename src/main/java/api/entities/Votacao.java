@@ -2,15 +2,8 @@ package api.entities;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import api.dtos.VotacaoDto;
 import lombok.AllArgsConstructor;
@@ -26,27 +19,25 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Entity
-@Table(name = "votacao")
+
+@Document(collection = "votacao")
 public class Votacao {
 
 	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private String id;
 	
-	@ManyToOne
-	@JoinColumn(name = "pauta_id")
+//	@ManyToOne
+//	@JoinColumn(name = "pauta_id")
 	private Pauta pauta;
 	
-	@ManyToOne
-	@JoinColumn(name = "associado_id")
+//	@ManyToOne
+//	@JoinColumn(name = "associado_id")
 	private Associado associado;
 	
-	@Column(name = "votado_em")
+//	@Column(name = "votado_em")
 	private LocalDateTime votadoEm;
 	
-	@Column(name = "voto")
+//	@Column(name = "voto")
 	private String voto;
 
 	public Votacao(VotacaoDto votacaoDto) {
@@ -54,9 +45,10 @@ public class Votacao {
 		this.associado = new Associado(votacaoDto.getIdAssociado());
 		this.pauta = new Pauta(votacaoDto.getIdPauta());
 		this.voto = votacaoDto.getVoto().toUpperCase();
+		this.votadoEm = LocalDateTime.now();
 	}
 
-	@PrePersist
+//	@PrePersist
 	private void prePersist() {
 		this.votadoEm = LocalDateTime.now();
 	}

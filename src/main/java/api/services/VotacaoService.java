@@ -13,6 +13,6 @@ public interface VotacaoService {
 	
 	Optional<Votacao> jaVotou(Associado associado, Pauta pauta);
 	
-	ResultadoVotacao resultadoVotacao(Long idPauta);
+	ResultadoVotacao resultadoVotacao(String idPauta);
 
 }

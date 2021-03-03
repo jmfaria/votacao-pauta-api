@@ -37,13 +37,13 @@ public class VotacaoController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("v1/votacao/resultado/{id}")
-	public ResponseEntity<Response<ResultadoVotacaoDto>> resultadoV1(@PathVariable("id") Long id) {
+	@GetMapping("v1/votacao/resultado/{idPauta}")
+	public ResponseEntity<Response<ResultadoVotacaoDto>> resultadoV1(@PathVariable("idPauta") String idPauta) {
 
-		log.info("Buscando resultado da Votação de Pauta id: {}", id);
+		log.info("Buscando resultado da Votação de Pauta id: {}", idPauta);
 		Response<ResultadoVotacaoDto> response = new Response<>();
 
-		response.setData(new ResultadoVotacaoDto(this.votacaoService.resultadoVotacao(id)));
+		response.setData(new ResultadoVotacaoDto(this.votacaoService.resultadoVotacao(idPauta)));
 		return ResponseEntity.ok(response);
 	}
 }

@@ -1,5 +1,6 @@
 package api.repositories;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
@@ -52,7 +53,8 @@ public class VotacaoRepositoryTest{
 	public void testBuscarVotoPorAssociadoEPauta() {
 		
 		Optional<Votacao> votacao = this.votacaoRepository.findByAssociadoAndPauta(this.associado, this.pauta);
-		assertTrue(this.votacao.getId() == votacao.get().getId());		
+//		assertTrue(this.votacao.getId().equals(votacao.get().getId()));	
+		assertEquals(this.votacao.getId(), votacao.get().getId());
 		
 	}
 	
@@ -68,6 +70,7 @@ public class VotacaoRepositoryTest{
 	private Associado gerarAssociado() {
 		
 		Associado associado = new Associado();
+		associado.setId("1");
 		associado.setCpf("71308724462");
 		associado.setNome("Associado teste");
 		
@@ -78,6 +81,7 @@ public class VotacaoRepositoryTest{
 		
 		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(10L);
 		Pauta pauta = new Pauta();
+		pauta.setId("1");
 		pauta.setNome("Nome da Pauta");
 		pauta.setDescricao("Descrição de Pauta");				
 		pauta.setValidaAte(localDateTime);

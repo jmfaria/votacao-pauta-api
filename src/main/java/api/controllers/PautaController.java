@@ -42,7 +42,7 @@ public class PautaController {
 	}
 
 	@PutMapping("v1/pautas/id/{id}")
-	public ResponseEntity<Response<PautaDto>> abriSessaoV1(@Valid @PathVariable("id") Long id,
+	public ResponseEntity<Response<PautaDto>> abriSessaoV1(@Valid @PathVariable("id") String id,
 			@Valid @RequestBody Long tempoDaSessao) {
 
 		log.info("Abrindo sessão para Pauta id: {}", id);

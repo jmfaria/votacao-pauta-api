@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import api.entities.Associado;
@@ -18,8 +19,11 @@ import api.entities.Associado;
 public class AssociadoRepositoryTest {
 
 	@Autowired
+	MongoTemplate mongoTemplate;
+	
+	@Autowired
 	private AssociadoRepository associadoRepository;
-
+	
 	private Associado associado;
 
 	@BeforeEach
@@ -29,7 +33,8 @@ public class AssociadoRepositoryTest {
 
 	@AfterEach
 	public void tearDown() {
-		this.associadoRepository.deleteAll();
+//		this.associadoRepository.deleteAll();
+		mongoTemplate.getDb().drop();
 	}
 
 	@Test
@@ -40,7 +45,7 @@ public class AssociadoRepositoryTest {
 
 	private Associado gerarAssociado() {
 		Associado associado = new Associado();
-		associado.setCpf("71308724462");
+		associado.setCpf("44158921082");
 		associado.setNome("Associado teste");
 		return associado;
 	}
