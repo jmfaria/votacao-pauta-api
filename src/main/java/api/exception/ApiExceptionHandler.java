@@ -19,8 +19,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import api.response.Response;
 import api.services.impl.exceptions.ApiExternalNaoPermitiuVotoException;
+import api.services.impl.exceptions.AssociadoCpfJaCadastradoException;
 import api.services.impl.exceptions.AssociadoJaVotouPautaException;
+import api.services.impl.exceptions.CpfInvalidoException;
+import api.services.impl.exceptions.PautaInexistenteException;
+import api.services.impl.exceptions.PautaJaCadastradaException;
+import api.services.impl.exceptions.PautaJaEncerradaException;
 import api.services.impl.exceptions.PautaNaoAbertaOuJaFechadaException;
+import api.services.impl.exceptions.PautaNomeInvalidoException;
+import api.services.impl.exceptions.ResultadoVotacaoNaoConcluidoException;
 import api.services.impl.exceptions.VotoNaoAceitoException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -73,24 +80,86 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler({ PautaNaoAbertaOuJaFechadaException.class })
-	public ResponseEntity<Object> handlePautaNaoAbertaOuJaFechada(PautaNaoAbertaOuJaFechadaException ex,
+	public ResponseEntity<Object> handlePautaNaoAbertaOuJaFechadaException(PautaNaoAbertaOuJaFechadaException ex,
 			WebRequest request) {
 
 		String mensagemUsuario = "Pauta não aberta ou já fechada para votação. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
 		log.error(mensagemUsuario);
 		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
 	}
+	
+	@ExceptionHandler({ PautaJaCadastradaException.class })
+	public ResponseEntity<Object> handlePautaNomeJaCadastradaException(PautaJaCadastradaException ex,
+			WebRequest request) {
+
+		String mensagemUsuario = "Pauta com esse nome já foi cadastrada. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
+		log.error(mensagemUsuario);
+		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
+	}
+	
+	@ExceptionHandler({ PautaNomeInvalidoException.class })
+	public ResponseEntity<Object> handlePautaNomeInvalidoException(PautaNomeInvalidoException ex,
+			WebRequest request) {
+
+		String mensagemUsuario = "Nome deve conter entre 5 e 100 caracteres. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
+		log.error(mensagemUsuario);
+		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
+	}
+	
+	@ExceptionHandler({ PautaInexistenteException.class })
+	public ResponseEntity<Object> handlePautaInexistenteException(PautaInexistenteException ex,
+			WebRequest request) {
+
+		String mensagemUsuario = "Pauta inexistente. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
+		log.error(mensagemUsuario);
+		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
+	}
+	
+	@ExceptionHandler({ PautaJaEncerradaException.class })
+	public ResponseEntity<Object> handlePautaJaEncerradaException(PautaJaEncerradaException ex,
+			WebRequest request) {
+
+		String mensagemUsuario = "Pauta já encerrada. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
+		log.error(mensagemUsuario);
+		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
+	}
+	
+	@ExceptionHandler({ ResultadoVotacaoNaoConcluidoException.class })
+	public ResponseEntity<Object> handleResultadoVotacaoNaoConcluidoException(ResultadoVotacaoNaoConcluidoException ex,
+			WebRequest request) {
+
+		String mensagemUsuario = "Resultado não concluido, a Pauta está aberta para Votação. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
+		log.error(mensagemUsuario);
+		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
+	}
+
 
 	@ExceptionHandler({ AssociadoJaVotouPautaException.class })
-	public ResponseEntity<Object> handleAssociadoJaVotouPauta(AssociadoJaVotouPautaException ex, WebRequest request) {
+	public ResponseEntity<Object> handleAssociadoJaVotouPautaException(AssociadoJaVotouPautaException ex, WebRequest request) {
 
 		String mensagemUsuario = "Associado já votou nessa Pauta. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
 		log.error(mensagemUsuario);
 		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
 	}
+	
+	@ExceptionHandler({ AssociadoCpfJaCadastradoException.class })
+	public ResponseEntity<Object> handleAssociadoCpfJaCadastradoException(AssociadoCpfJaCadastradoException ex, WebRequest request) {
+
+		String mensagemUsuario = "Associado com esse CPF já foi cadastrado. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
+		log.error(mensagemUsuario);
+		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
+	}
+	
+	@ExceptionHandler({ CpfInvalidoException.class })
+	public ResponseEntity<Object> handleAssociadoCpfInvalidoException(CpfInvalidoException ex, WebRequest request) {
+
+		String mensagemUsuario = "Associado com CPF inválido. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
+		log.error(mensagemUsuario);
+		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
+	}
 
 	@ExceptionHandler({ ApiExternalNaoPermitiuVotoException.class })
-	public ResponseEntity<Object> handleAssociadoJaVotouPauta(ApiExternalNaoPermitiuVotoException ex,
+	public ResponseEntity<Object> handleAssociadoJaVotouPautaException(ApiExternalNaoPermitiuVotoException ex,
 			WebRequest request) {
 
 		String mensagemUsuario = "API externa não permitiu voto do Associado. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
@@ -99,7 +168,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler({ VotoNaoAceitoException.class })
-	public ResponseEntity<Object> handleAssociadoJaVotouPauta(VotoNaoAceitoException ex, WebRequest request) {
+	public ResponseEntity<Object> handleAssociadoJaVotouPautaException(VotoNaoAceitoException ex, WebRequest request) {
 
 		String mensagemUsuario = "O voto deve ser expresso com as palavras 'SIM' ou 'Não'. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
 		log.error(mensagemUsuario);

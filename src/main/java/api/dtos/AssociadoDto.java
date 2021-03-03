@@ -16,7 +16,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class AssociadoDto {
 
-	private Long id;
+	private String id;
 	private String nome;
 	private String cpf;
 		

@@ -16,9 +16,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class VotacaoDto {
 	
-	private Long id;
-	private Long idPauta;
-	private Long idAssociado;	
+	private String id;
+	private String idPauta;
+	private String idAssociado;	
 	private String voto;
 	
 	public VotacaoDto(Votacao votacao) {

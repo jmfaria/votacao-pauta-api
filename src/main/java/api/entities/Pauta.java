@@ -3,13 +3,15 @@ package api.entities;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import api.dtos.PautaDto;
 import lombok.AllArgsConstructor;
@@ -26,44 +28,39 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Entity
-@Table(name = "pauta")
+@Document(collection = "pauta")
 public class Pauta {
 
 	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	@Column(name = "nome")
+	private String id;
 	private String nome;
-	
-	@Column(name = "descricao")
 	private String descricao;
 	
-	@Column(name = "valida_ate")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	private LocalDateTime validaAte;
-	
-	@Column(name = "encerrada")
-	private Boolean encerrada = false;
+	private Boolean encerrada;
 
-	public Pauta(Long id) {
+	public Pauta(String id) {
 		this.id = id;
 	}
 
 	public Pauta(PautaDto pautaDto) {
+		if(pautaDto.getId() != null)
+			this.id = pautaDto.getId();
 		this.nome = pautaDto.getNome();
 		this.descricao = pautaDto.getDescricao();
 		this.setEncerrada(false);
 	}
 	
-	public Pauta(Long id, Long tempoDaSessao) {
+	public Pauta(String id, Long tempoDaSessao) {
 
 		this.id = id;
 		this.validaAte = this.definirTempoDeSessao(tempoDaSessao);
 	}	
 
-	public Pauta(Long id, PautaDto pautaDto) {
+	public Pauta(String id, PautaDto pautaDto) {
 
 		this.id = id;
 		this.nome = pautaDto.getNome();

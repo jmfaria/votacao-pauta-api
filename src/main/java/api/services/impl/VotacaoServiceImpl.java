@@ -19,9 +19,11 @@ import api.services.PautaService;
 import api.services.VotacaoService;
 import api.services.impl.exceptions.ApiExternalNaoPermitiuVotoException;
 import api.services.impl.exceptions.AssociadoJaVotouPautaException;
+import api.services.impl.exceptions.PautaInexistenteException;
+import api.services.impl.exceptions.PautaJaEncerradaException;
 import api.services.impl.exceptions.PautaNaoAbertaOuJaFechadaException;
+import api.services.impl.exceptions.ResultadoVotacaoNaoConcluidoException;
 import api.services.impl.exceptions.VotoNaoAceitoException;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class VotacaoServiceImpl implements VotacaoService {
@@ -45,7 +47,7 @@ public class VotacaoServiceImpl implements VotacaoService {
 		Optional<Pauta> pauta = this.pautaService.buscarPorId(votacao.getPauta().getId());
 
 		if (pauta.isPresent() && !this.pautaService.estaAbertaParaVotacao(pauta.get().getId())) {
-			
+
 			throw new PautaNaoAbertaOuJaFechadaException();
 
 		} else if (associado.isPresent() && pauta.isPresent()
@@ -66,6 +68,8 @@ public class VotacaoServiceImpl implements VotacaoService {
 			throw new VotoNaoAceitoException();
 		}
 
+		votacao.setAssociado(associado.get());
+		votacao.setPauta(pauta.get());
 		return this.votacaoRepository.save(votacao);
 	}
 
@@ -75,30 +79,25 @@ public class VotacaoServiceImpl implements VotacaoService {
 	}
 
 	@Override
-	public ResultadoVotacao resultadoVotacao(Long idPauta) {
+	public ResultadoVotacao resultadoVotacao(String idPauta) {
 
 		Optional<Pauta> pauta = this.pautaService.buscarPorId(idPauta);
-		BindingResult result = new DataBinder(null).getBindingResult();
 
 		if (!pauta.isPresent()) {
-			result.addError(new ObjectError("Votação de Pauta", "Pauta não existe."));
+			throw new PautaInexistenteException();
 		}
 
-		if (pauta.isPresent() && this.pautaService.estaAbertaParaVotacao(pauta.get().getId())) {
-			result.addError(new ObjectError("Votação de Pauta", "A votação para essa Pauta ainda não foi encerrada."));
+		if (this.pautaService.estaAbertaParaVotacao(pauta.get().getId())) {
+			throw new ResultadoVotacaoNaoConcluidoException();
 		}
 
-		if (pauta.isPresent()) {
-			ResultadoVotacao resultadoVotacao = new ResultadoVotacao();
-			resultadoVotacao.setVotosSim(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "SIM"));
-			resultadoVotacao.setVotosNao(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "NÃO"));
-			resultadoVotacao.setVotosTotal(resultadoVotacao.getVotosSim() + resultadoVotacao.getVotosNao());
-			resultadoVotacao.setPauta(pauta.get());
+		ResultadoVotacao resultadoVotacao = new ResultadoVotacao();
+		resultadoVotacao.setVotosSim(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "SIM"));
+		resultadoVotacao.setVotosNao(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "NÃO"));
+		resultadoVotacao.setVotosTotal(resultadoVotacao.getVotosSim() + resultadoVotacao.getVotosNao());
+		resultadoVotacao.setPauta(pauta.get());
 
-			return resultadoVotacao;
-		}
-
-		return null;
+		return resultadoVotacao;
 	}
 
 }

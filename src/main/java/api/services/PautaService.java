@@ -10,11 +10,11 @@ import api.entities.Pauta;
 
 public interface PautaService {
 	
-	boolean estaAbertaParaVotacao(Long id);
+	boolean estaAbertaParaVotacao(String id);
 		
 	Page<Pauta> listarPautasAtivas(Pageable pageable);
 	
-	Optional<Pauta> buscarPorId(Long id);
+	Optional<Pauta> buscarPorId(String id);
 	
 	Pauta incluir(Pauta pauta);
 	

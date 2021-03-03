@@ -57,9 +57,9 @@ public class VotacaoControllerTest {
 
 	@BeforeEach
 	public void init() {
-		BDDMockito.given(this.associadoService.buscarPorId(1L)).willReturn(Optional.of(this.gerarAssociado()));
-		BDDMockito.given(this.pautaService.buscarPorId(1L)).willReturn(Optional.of(this.gerarPauta()));
-		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(1L)).willReturn(true);
+		BDDMockito.given(this.associadoService.buscarPorId("1")).willReturn(Optional.of(this.gerarAssociado()));
+		BDDMockito.given(this.pautaService.buscarPorId("1")).willReturn(Optional.of(this.gerarPauta()));
+		BDDMockito.given(this.pautaService.estaAbertaParaVotacao("1")).willReturn(true);
 		BDDMockito.given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(this.gerarAssociado().getCpf()))
 				.willReturn("ENABLE_TO_VOTE");
 		BDDMockito.given(this.votacaoService.votar(Mockito.any(Votacao.class))).willReturn(this.gerarVotacao());
@@ -93,9 +93,9 @@ public class VotacaoControllerTest {
 	private VotacaoDto gerarVotacaoDto() {
 		VotacaoDto votacaoDto = new VotacaoDto();
 
-		votacaoDto.setId(1L);
-		votacaoDto.setIdAssociado(1L);
-		votacaoDto.setIdPauta(1L);
+		votacaoDto.setId("1");
+		votacaoDto.setIdAssociado("1");
+		votacaoDto.setIdPauta("1");
 		votacaoDto.setVoto("SIM");
 
 		return votacaoDto;
@@ -106,7 +106,7 @@ public class VotacaoControllerTest {
 		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(1L);
 
 		Pauta pauta = new Pauta();
-		pauta.setId(1L);
+		pauta.setId("1");
 		pauta.setNome("Nome da Pauta1");
 		pauta.setDescricao("Descrição da Pauta1");
 		pauta.setValidaAte(localDateTime);
@@ -118,7 +118,7 @@ public class VotacaoControllerTest {
 	private Associado gerarAssociado() {
 
 		Associado associado = new Associado();
-		associado.setId(1L);
+		associado.setId("1");
 		associado.setCpf("71308724462");
 		associado.setNome("Associado 1");
 
@@ -129,9 +129,9 @@ public class VotacaoControllerTest {
 		
 		Votacao votacao = new Votacao();
 
-		votacao.setId(1L);
-		votacao.setAssociado(new Associado(1L));
-		votacao.setPauta(new Pauta(1L));
+		votacao.setId("1");
+		votacao.setAssociado(new Associado("1"));
+		votacao.setPauta(new Pauta("1"));
 		votacao.setVoto("SIM");
 		votacao.setVotadoEm(LocalDateTime.now());
 

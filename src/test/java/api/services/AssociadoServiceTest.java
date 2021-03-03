@@ -33,7 +33,7 @@ public class AssociadoServiceTest {
 	public void init() throws Exception {
 		
 		BDDMockito.given(this.associadoRepository.findAll()).willReturn(new ArrayList<Associado>());
-		BDDMockito.given(this.associadoRepository.findById(Mockito.anyLong())).willReturn(Optional.of(new Associado()));
+		BDDMockito.given(this.associadoRepository.findById(Mockito.anyString())).willReturn(Optional.of(new Associado()));
 		BDDMockito.given(this.associadoRepository.findByCpf(Mockito.anyString())).willReturn(Optional.of(new Associado()));
 		BDDMockito.given(this.associadoRepository.save(Mockito.any(Associado.class))).willReturn(new Associado());
 
@@ -49,7 +49,7 @@ public class AssociadoServiceTest {
 	@Test
 	public void buscarPorId() {
 
-		Optional<Associado> associado = this.associadoService.buscarPorId(1L);
+		Optional<Associado> associado = this.associadoService.buscarPorId("1");
 		assertTrue(associado.isPresent());
 	}
 

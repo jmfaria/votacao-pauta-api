@@ -2,6 +2,7 @@ package api.services;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -17,9 +18,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import api.entities.Associado;
 import api.entities.Pauta;
-import api.entities.ResultadoVotacao;
 import api.entities.Votacao;
 import api.repositories.VotacaoRepository;
+import api.services.impl.exceptions.ResultadoVotacaoNaoConcluidoException;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -40,11 +41,11 @@ public class VotacaoServiceTest{
 	@BeforeEach
 	public void init() throws Exception {
 		BDDMockito.given(this.votacaoRepository.save(Mockito.any(Votacao.class))).willReturn(new Votacao());
-		BDDMockito.given(this.associadoService.buscarPorId(Mockito.anyLong())).willReturn(
+		BDDMockito.given(this.associadoService.buscarPorId(Mockito.anyString())).willReturn(
 				Optional.of(gerarAssociado()));
-		BDDMockito.given(this.pautaService.buscarPorId(Mockito.anyLong())).willReturn(
-				Optional.of(new Pauta(1L)));
-		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(Mockito.anyLong())).willReturn(true);		
+		BDDMockito.given(this.pautaService.buscarPorId(Mockito.anyString())).willReturn(
+				Optional.of(new Pauta("1")));
+		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(Mockito.anyString())).willReturn(true);		
 		
 //		BDDMockito.given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta()))
 //		.willReturn(false);
@@ -70,9 +71,9 @@ public class VotacaoServiceTest{
 	}
 	
 	@Test
-	public void resultadoVotacao() {
-		ResultadoVotacao resultadoVotacao = this.votacaoService.resultadoVotacao(1L);
-		assertNotNull(resultadoVotacao);
+	public void resultadoVotacao() {		
+		assertThrows(ResultadoVotacaoNaoConcluidoException.class, 
+				() -> {this.votacaoService.resultadoVotacao("1");});
 	}
 	
 	private Votacao gerarVotacao() {
@@ -87,7 +88,7 @@ public class VotacaoServiceTest{
 	
 	private Associado gerarAssociado() {
 		Associado associado = new Associado();
-		associado.setId(1L);
+		associado.setId("1");
 		associado.setCpf("71308724462");
 		associado.setNome("Associado teste");
 		return associado;
@@ -97,7 +98,7 @@ public class VotacaoServiceTest{
 
 		LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(10L);
 		Pauta pauta = new Pauta();
-		pauta.setId(1L);
+		pauta.setId("1");
 		pauta.setNome("Nome da Pauta1");
 		pauta.setDescricao("Descrição da Pauta1");
 		pauta.setValidaAte(localDateTime);

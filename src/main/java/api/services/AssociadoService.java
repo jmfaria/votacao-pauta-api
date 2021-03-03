@@ -9,7 +9,7 @@ public interface AssociadoService {
 	
 	List<Associado> listar();
 	
-	Optional<Associado> buscarPorId(Long id);
+	Optional<Associado> buscarPorId(String id);
 	
 	Associado incluir(Associado associado);
 	

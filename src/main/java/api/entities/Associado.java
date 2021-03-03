@@ -1,14 +1,10 @@
 package api.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import api.dtos.AssociadoDto;
 import lombok.AllArgsConstructor;
@@ -25,23 +21,19 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Entity
-@Table(name = "associado")
+
+@Document(collection = "associado")
 public class Associado {
 	
 	@Id
-	@Column(name="id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private String id;
 	
 	@NotEmpty(message = "Nome não pode ser vazio.")
 	@Length(min = 3, max = 200, message = "Nome deve conter entre 3 e 200 caracteres.")
-	@Column
 	private String nome;
 	
 	@NotEmpty(message = "CPF não pode ser vazio.")
 	@Length(min = 11, max = 11, message = "CPF deve conter 11 caracteres.")
-	@Column
 	private String cpf;
 	
 	public Associado(AssociadoDto associadoDto) {
@@ -49,7 +41,7 @@ public class Associado {
 		this.cpf = associadoDto.getCpf();
 	}
 	
-	public Associado(Long id) {
+	public Associado(String id) {
 		this.id = id;
 	}
 

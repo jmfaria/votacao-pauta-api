@@ -27,12 +27,9 @@ public class MonitoraPautaServiceImpl {
 	public void agendamentoParaFinaliarVotacaoDePauta(){
 		
 		this.pautaService.listarPautasNaoEncerradas().forEach(pauta -> {
-			
 			if (!this.pautaService.estaAbertaParaVotacao(pauta.getId())) {
-				
 				pauta.setEncerrada(true);
-				this.pautaService.finalizarPauta(pauta);
-				
+				this.pautaService.finalizarPauta(pauta);				
 				try {					
 					
 					this.mensageriaService.publicarMensagemNaFila(
