@@ -61,7 +61,6 @@ public class AssociadoControllerTest {
 		
 		mvc.perform(MockMvcRequestBuilders.post("/api/v1/associados/").content(this.gerarJsonRequisicaoPost())
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.data.id").value(this.associados.get(0).getId()))
 				.andExpect(jsonPath("$.data.nome").value(this.associados.get(0).getNome()))
 				.andExpect(jsonPath("$.data.cpf").value(this.associados.get(0).getCpf()))
 				.andExpect(jsonPath("$.errors").isEmpty());
@@ -76,7 +75,7 @@ public class AssociadoControllerTest {
 
 		mvc.perform(MockMvcRequestBuilders.get("/api/v1/associados/cpf/" + this.associados.get(0).getCpf())
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.data.id").value(this.associados.get(0).getId()))
+				//.andExpect(jsonPath("$.data.id").value(this.associados.get(0).getId()))
 				.andExpect(jsonPath("$.data.nome", equalTo(this.associados.get(0).getNome())))
 				.andExpect(jsonPath("$.data.cpf", equalTo(this.associados.get(0).getCpf())))
 				.andExpect(jsonPath("$.errors").isEmpty());
