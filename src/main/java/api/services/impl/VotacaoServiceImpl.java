@@ -92,8 +92,8 @@ public class VotacaoServiceImpl implements VotacaoService {
 		}
 
 		ResultadoVotacao resultadoVotacao = new ResultadoVotacao();
-		resultadoVotacao.setVotosSim(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "SIM"));
-		resultadoVotacao.setVotosNao(this.votacaoRepository.countByPautaAndVoto(pauta.get(), "NÃO"));
+		resultadoVotacao.setVotosSim(this.votacaoRepository.countByPautaAndVoto(pauta.get().getId(), "SIM"));
+		resultadoVotacao.setVotosNao(this.votacaoRepository.countByPautaAndVoto(pauta.get().getId(), "NÃO"));
 		resultadoVotacao.setVotosTotal(resultadoVotacao.getVotosSim() + resultadoVotacao.getVotosNao());
 		resultadoVotacao.setPauta(pauta.get());
 

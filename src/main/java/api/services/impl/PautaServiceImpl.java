@@ -35,17 +35,17 @@ public class PautaServiceImpl implements PautaService {
 
 	@Override
 	public boolean estaAbertaParaVotacao(String id) {
-		return this.pautaRepository.findByIdAndValidaAteAfter(id, LocalDateTime.now()).isPresent();
+		return this.pautaRepository.findAllByIdAndValidaAteAfterAndEncerradaFalse(id, LocalDateTime.now()).isPresent();
 	}
 
 	@Override
 	public List<Pauta> listarPautasNaoEncerradas() {
-		return this.pautaRepository.findByNotEncerrada();
+		return this.pautaRepository.findAllByValidaAteNotNullAndEncerradaFalse();
 	}
 
 	@Override
 	public Page<Pauta> listarPautasAtivas(Pageable pageable) {
-		return this.pautaRepository.findByValidaAteAfter(LocalDateTime.now(), pageable);
+		return this.pautaRepository.findAllByValidaAteAfterAndEncerradaFalse(LocalDateTime.now(), pageable);
 	}
 
 	@Override

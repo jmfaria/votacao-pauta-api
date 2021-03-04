@@ -61,8 +61,8 @@ public class VotacaoRepositoryTest{
 	@Test
 	public void buscarResultadoVotacao() {
 		
-		Long votosSim = this.votacaoRepository.countByPautaAndVoto(this.pauta, "SIM");
-		Long votosNao = this.votacaoRepository.countByPautaAndVoto(this.pauta, "NÃO");
+		Long votosSim = this.votacaoRepository.countByPautaAndVoto(this.pauta.getId(), "SIM");
+		Long votosNao = this.votacaoRepository.countByPautaAndVoto(this.pauta.getId(), "NÃO");
 		assertTrue(votosSim == 1 && votosNao == 0);
 		
 	}
