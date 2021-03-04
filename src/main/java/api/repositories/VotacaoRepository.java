@@ -16,9 +16,6 @@ public interface VotacaoRepository extends MongoRepository<Votacao, String> {
 	
 	Optional<Votacao> findByAssociadoAndPauta(Associado associado, Pauta pauta);
 	
-//	@Query(value = "SELECT COUNT(v) FROM Votacao v WHERE v.pauta = :pauta AND v.voto = :voto")
-//	Long countByPautaAndVoto(@Param("pauta") Pauta pauta, @Param("voto") String voto);	
-
-	@Query(value="{ 'pauta': ?0, 'voto': ?1 }", count = true)
-	Long countByPautaAndVoto(@Param("pauta") Pauta pauta, @Param("voto") String voto);	
+	@Query(value="{ 'pauta.id': ?0, 'voto': ?1 }", count = true)
+	Long countByPautaAndVoto(@Param("pauta") String pautaId, @Param("voto") String voto);	
 }

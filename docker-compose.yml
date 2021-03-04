@@ -73,10 +73,8 @@ services:
       - "8080:8080" 
     command: mvn spring-boot:run
     depends_on:
-      - db
-      - jms
       - kafka
-      - mongo-express
+      - mongo
     networks:
       - localnet
 volumes:

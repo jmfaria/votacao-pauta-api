@@ -37,7 +37,7 @@ public class PautaServiceTest {
 //		BDDMockito.given(this.pautaRepository.findByValidaAteAfter(Mockito.any(LocalDateTime.class)))
 //				.willReturn(new ArrayList<Pauta>());
 		BDDMockito.given(
-				this.pautaRepository.findByIdAndValidaAteAfter(Mockito.anyString(), Mockito.any(LocalDateTime.class)))
+				this.pautaRepository.findAllByIdAndValidaAteAfterAndEncerradaFalse(Mockito.anyString(), Mockito.any(LocalDateTime.class)))
 				.willReturn(Optional.of(new Pauta()));
 		BDDMockito.given(this.pautaRepository.findById(Mockito.anyString())).willReturn(Optional.of(new Pauta()));
 		BDDMockito.given(this.pautaRepository.save(Mockito.any(Pauta.class))).willReturn(new Pauta());
