@@ -22,8 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class PautaServiceImpl implements PautaService {
 
-	private static final String NOME_OBJETO = "Pauta";
-
 	@Autowired
 	private PautaRepository pautaRepository;
 

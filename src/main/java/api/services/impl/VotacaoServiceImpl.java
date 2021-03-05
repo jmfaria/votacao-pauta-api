@@ -4,9 +4,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.DataBinder;
-import org.springframework.validation.ObjectError;
 
 import api.entities.Associado;
 import api.entities.Pauta;
@@ -20,7 +17,6 @@ import api.services.VotacaoService;
 import api.services.impl.exceptions.ApiExternalNaoPermitiuVotoException;
 import api.services.impl.exceptions.AssociadoJaVotouPautaException;
 import api.services.impl.exceptions.PautaInexistenteException;
-import api.services.impl.exceptions.PautaJaEncerradaException;
 import api.services.impl.exceptions.PautaNaoAbertaOuJaFechadaException;
 import api.services.impl.exceptions.ResultadoVotacaoNaoConcluidoException;
 import api.services.impl.exceptions.VotoNaoAceitoException;
