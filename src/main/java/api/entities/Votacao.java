@@ -25,19 +25,9 @@ public class Votacao {
 
 	@Id
 	private String id;
-	
-//	@ManyToOne
-//	@JoinColumn(name = "pauta_id")
 	private Pauta pauta;
-	
-//	@ManyToOne
-//	@JoinColumn(name = "associado_id")
 	private Associado associado;
-	
-//	@Column(name = "votado_em")
 	private LocalDateTime votadoEm;
-	
-//	@Column(name = "voto")
 	private String voto;
 
 	public Votacao(VotacaoDto votacaoDto) {
@@ -45,11 +35,6 @@ public class Votacao {
 		this.associado = new Associado(votacaoDto.getIdAssociado());
 		this.pauta = new Pauta(votacaoDto.getIdPauta());
 		this.voto = votacaoDto.getVoto().toUpperCase();
-		this.votadoEm = LocalDateTime.now();
-	}
-
-//	@PrePersist
-	private void prePersist() {
 		this.votadoEm = LocalDateTime.now();
 	}
 
