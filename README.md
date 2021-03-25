@@ -8,10 +8,10 @@ API para gerenciamento de sessões de votação.
 4. Votar na Pauta criada
 5. Com o fechamento agendado, após o tempo denido na abertura da Pauta, será produzida uma mensagem na fila do Kafka
 
-##### [Acessar o MongoExpress - usuário: mongouser, senha: mongopass](http://ec2-52-67-250-221.sa-east-1.compute.amazonaws.com:8081)
+#### [Acessar o MongoExpress - usuário: mongouser, senha: mongopass](http://ec2-52-67-250-221.sa-east-1.compute.amazonaws.com:8081)
 Base do projeto: votacao_api
 
-##### [Acessar o Trifecta](http://ec2-52-67-250-221.sa-east-1.compute.amazonaws.com:8888)
+#### [Acessar o Trifecta](http://ec2-52-67-250-221.sa-east-1.compute.amazonaws.com:8888)
 Aba "Observe", tópico "votacao.pauta.api"
 
 ## Diretivas para execução
