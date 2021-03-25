@@ -1,4 +1,4 @@
-package api.services.impl.exceptions;
+package api.exception;
 
 public class PautaNomeInvalidoException extends RuntimeException {
 

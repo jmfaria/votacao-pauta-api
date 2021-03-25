@@ -18,7 +18,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class VotacaoDto {
 	
-    @JsonIgnore
+	@JsonIgnore
 	private String id;
 	private String idPauta;
 	private String idAssociado;	

@@ -79,8 +79,11 @@ public class Pauta {
 	public Long getTempoSessaoMinutos() {
 
 		if (this.getValidaAte() != null) {
-			return (this.getValidaAte().toEpochSecond(ZoneOffset.UTC)
+			
+			Long tempoSessaoMinutos = (this.getValidaAte().toEpochSecond(ZoneOffset.UTC)
 					- LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) / 60;
+			return tempoSessaoMinutos > 0 ? tempoSessaoMinutos : 0;
+					
 		} else {
 			return null;
 		}

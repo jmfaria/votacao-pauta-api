@@ -18,17 +18,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import api.response.Response;
-import api.services.impl.exceptions.ApiExternalNaoPermitiuVotoException;
-import api.services.impl.exceptions.AssociadoCpfJaCadastradoException;
-import api.services.impl.exceptions.AssociadoJaVotouPautaException;
-import api.services.impl.exceptions.CpfInvalidoException;
-import api.services.impl.exceptions.PautaInexistenteException;
-import api.services.impl.exceptions.PautaJaCadastradaException;
-import api.services.impl.exceptions.PautaJaEncerradaException;
-import api.services.impl.exceptions.PautaNaoAbertaOuJaFechadaException;
-import api.services.impl.exceptions.PautaNomeInvalidoException;
-import api.services.impl.exceptions.ResultadoVotacaoNaoConcluidoException;
-import api.services.impl.exceptions.VotoNaoAceitoException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -154,6 +143,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleAssociadoCpfInvalidoException(CpfInvalidoException ex, WebRequest request) {
 
 		String mensagemUsuario = "Associado com CPF inválido. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
+		log.error(mensagemUsuario);
+		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
+	}
+	
+	@ExceptionHandler({ AssociadoInexistenteException.class })
+	public ResponseEntity<Object> handleAssociadoInexistenteParaCpfException(AssociadoInexistenteException ex, WebRequest request) {
+
+		String mensagemUsuario = "Associado inexistente. " + (ex.getCause() != null ? ex.getCause().toString() : ex.toString());
 		log.error(mensagemUsuario);
 		return ResponseEntity.badRequest().body(gerarResposta(mensagemUsuario));
 	}

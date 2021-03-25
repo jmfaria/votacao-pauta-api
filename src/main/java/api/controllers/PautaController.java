@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import api.business.PautaBusiness;
 import api.dtos.PautaDto;
+import api.dtos.ResultadoVotacaoDto;
 import api.entities.Pauta;
 import api.response.Response;
-import api.services.PautaService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,52 +27,63 @@ import lombok.extern.slf4j.Slf4j;
 public class PautaController {
 
 	@Autowired
-	private PautaService pautaService;
+	private PautaBusiness pautaBusiness;
 
 	@PostMapping("v1/pautas")
-	public ResponseEntity<Response<PautaDto>> incluirV1(@Valid @RequestBody PautaDto pautaDto) {
+	public ResponseEntity<Response<PautaDto>> incluir(@Valid @RequestBody PautaDto pautaDto) {
 
 		log.info("Incluindo Pauta {}", pautaDto.getNome());
 		Response<PautaDto> response = new Response<>();
 
 		Pauta pauta = new Pauta(pautaDto);
-		this.pautaService.incluir(pauta);
+		this.pautaBusiness.incluir(pauta);
 
 		response.setData(new PautaDto(pauta));
 		return ResponseEntity.ok(response);
 	}
 
 	@PutMapping("v1/pautas/id/{id}")
-	public ResponseEntity<Response<PautaDto>> abriSessaoV1(@Valid @PathVariable("id") String id,
+	public ResponseEntity<Response<PautaDto>> abriSessao(@Valid @PathVariable("id") String id,
 			@Valid @RequestBody Long tempoDaSessao) {
 
 		log.info("Abrindo sessão para Pauta id: {}", id);
 		Response<PautaDto> response = new Response<>();
 
-		Pauta pauta = this.pautaService.abrirSessaoParaVotacao(new Pauta(id, tempoDaSessao));
+		Pauta pauta = this.pautaBusiness.abrirSessaoParaVotacao(new Pauta(id, tempoDaSessao));
 		response.setData(new PautaDto(pauta));
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("v1/pautas")
+	@GetMapping("v1/pautas/ativas")
 	public ResponseEntity<Response<Page<Pauta>>> listarAtivas(Pageable pageable) {
 
 		Response<Page<Pauta>> response = new Response<>();
-		Page<Pauta> pautasAtivas = this.pautaService.listarPautasAtivas(pageable);
+		Page<Pauta> pautasAtivas = this.pautaBusiness.listarPautasAtivas(pageable);
 		
 		response.setData(pautasAtivas);
 		return ResponseEntity.ok(response);
 	}
 	
-	@GetMapping("v2/pautas")
+	@GetMapping("v1/pautas")
 	public ResponseEntity<Response<Page<Pauta>>> listarTodas(
 			Pageable pageable
 			) {
 
 		Response<Page<Pauta>> response = new Response<>();
-		Page<Pauta> pautasAtivas = this.pautaService.listarTodas(pageable);
+		Page<Pauta> pautasAtivas = this.pautaBusiness.listarTodas(pageable);
 		
 		response.setData(pautasAtivas);
 		return ResponseEntity.ok(response);
 	}
+	
+	@GetMapping("v1/pautas/votacao/{idPauta}/resultado")
+	public ResponseEntity<Response<ResultadoVotacaoDto>> resultado(@PathVariable("idPauta") String idPauta) {
+
+		log.info("Buscando resultado da Votação de Pauta id: {}", idPauta);
+		Response<ResultadoVotacaoDto> response = new Response<>();
+
+		response.setData(new ResultadoVotacaoDto(this.pautaBusiness.resultadoVotacao(idPauta)));
+		return ResponseEntity.ok(response);
+	}
+	
 }

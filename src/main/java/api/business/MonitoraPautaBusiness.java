@@ -1,4 +1,4 @@
-package api.services.impl;
+package api.business;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,21 +9,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import api.services.MensageriaService;
 import api.services.PautaService;
-import api.services.VotacaoService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class MonitoraPautaServiceImpl {
+public class MonitoraPautaBusiness {
 	
 	@Autowired
 	private PautaService pautaService;
 	@Autowired
 	private MensageriaService mensageriaService;
 	@Autowired
-	private VotacaoService votacaoService;
+	private VotacaoBusiness votacaoBusiness;
 
-	@Scheduled(fixedDelay = 1000 * 60)
+	@Scheduled(cron = "${cron.monitoramento.pauta}")
 	public void agendamentoParaFinaliarVotacaoDePauta(){
 		
 		this.pautaService.listarPautasNaoEncerradas().forEach(pauta -> {
@@ -34,7 +33,7 @@ public class MonitoraPautaServiceImpl {
 					
 					this.mensageriaService.publicarMensagemNaFila(
 							new ObjectMapper().writeValueAsString(
-									this.votacaoService.resultadoVotacao(pauta.getId())
+									this.votacaoBusiness.resultadoVotacao(pauta.getId())
 									)
 							);
 					

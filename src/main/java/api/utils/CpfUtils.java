@@ -13,6 +13,9 @@ public class CpfUtils {
 		int conta1 = 0;
 		int conta2 = 0;
 
+		if(cpf == null)
+			return false;
+		
 		cpf = cpf.trim();
 		cpf = cpf.replace(".", "").replace("-", "");
 

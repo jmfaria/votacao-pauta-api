@@ -18,7 +18,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class AssociadoDto {
 
-    @JsonIgnore
+	@JsonIgnore
 	private String id;
 	private String nome;
 	private String cpf;

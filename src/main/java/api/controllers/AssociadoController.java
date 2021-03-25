@@ -29,7 +29,7 @@ public class AssociadoController {
 	private AssociadoService associadoService;
 
 	@PostMapping("v1/associados")
-	public ResponseEntity<Response<AssociadoDto>> incluirV1(@Valid @RequestBody AssociadoDto associadoDto) {
+	public ResponseEntity<Response<AssociadoDto>> incluir(@Valid @RequestBody AssociadoDto associadoDto) {
 
 		log.info("Incluindo Associado {}", associadoDto.getNome());
 		Response<AssociadoDto> response = new Response<>();
@@ -42,7 +42,7 @@ public class AssociadoController {
 	}
 
 	@GetMapping("v1/associados")
-	public ResponseEntity<Response<List<Associado>>> listarV1() {
+	public ResponseEntity<Response<List<Associado>>> listar() {
 
 		log.info("Listando Associados");
 		Response<List<Associado>> response = new Response<>();
@@ -53,7 +53,7 @@ public class AssociadoController {
 	}
 
 	@GetMapping(value = "v1/associados/cpf/{cpf}")
-	public ResponseEntity<Response<AssociadoDto>> buscarPorCpfV1(@PathVariable("cpf") String cpf) {
+	public ResponseEntity<Response<AssociadoDto>> buscarPorCpf(@PathVariable("cpf") String cpf) {
 
 		log.info("Buscando Associado por CPF: {}", cpf);
 		Response<AssociadoDto> response = new Response<>();
