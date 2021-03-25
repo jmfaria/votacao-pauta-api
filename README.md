@@ -1,7 +1,7 @@
 # Votação Pauta API
 API para gerenciamento de sessões de votação.
 
-##### [Acessar a API publicada via Swagger](http://ec2-52-67-250-221.sa-east-1.compute.amazonaws.com:8080/swagger-ui/index.html)
+#### [Acessar a API publicada via Swagger](http://ec2-52-67-250-221.sa-east-1.compute.amazonaws.com:8080/swagger-ui/index.html)
 1. Incluir um Associado
 2. Incluir uma Pauta
 3. Abrir sessão para a Pauta
