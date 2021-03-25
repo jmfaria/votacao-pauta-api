@@ -1,18 +1,24 @@
 # Votação Pauta API
 API para gerenciamento de sessões de votação.
 
-#### [Acessar a API publicada via Swagger](http://ec2-52-67-250-221.sa-east-1.compute.amazonaws.com:8080/swagger-ui/index.html)
+#### [Acessar a API publicada via Swagger](http://ec2-18-230-70-182.sa-east-1.compute.amazonaws.com:8080/swagger-ui/index.html)
 1. Incluir um Associado
 2. Incluir uma Pauta
 3. Abrir sessão para a Pauta
 4. Votar na Pauta criada
 5. Com o fechamento agendado, após o tempo denido na abertura da Pauta, será produzida uma mensagem na fila do Kafka
 
-#### [Acessar o MongoExpress - usuário: mongouser, senha: mongopass](http://ec2-52-67-250-221.sa-east-1.compute.amazonaws.com:8081)
-Base do projeto: votacao_api
+#### [Acessar o MongoExpress](http://ec2-18-230-70-182.sa-east-1.compute.amazonaws.com:8081)
+- usuário: mongouser
+- senha: mongopass
+- Base do projeto: votacao_api
 
-#### [Acessar o Trifecta](http://ec2-52-67-250-221.sa-east-1.compute.amazonaws.com:8888)
+#### [Acessar o Trifecta](http://ec2-18-230-70-182.sa-east-1.compute.amazonaws.com:8888)
 Aba "Observe", tópico "votacao.pauta.api"
+
+#### [Acessar o Sonarqube](http://ec2-18-230-70-182.sa-east-1.compute.amazonaws.com:9000)
+- Usuário: admin
+- senha: admin
 
 ## Diretivas para execução
 
