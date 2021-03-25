@@ -1,5 +1,19 @@
 version: '3.6'
+
 services:
+
+  trifecta:
+    image: chatu/trifecta
+    ports:
+      - "8888:8888"  
+    environment:
+    - ZOOKEEPERS=zookeeper
+    networks:
+      - localnet
+    depends_on:
+      - zookeeper
+      - kafka
+      
   zookeeper:
     restart: always
     image: confluentinc/cp-zookeeper:5.2.1
@@ -20,6 +34,7 @@ services:
       - "9092:9092"
     depends_on:
       - zookeeper
+      
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
