@@ -1,8 +1,9 @@
 package api.services;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -14,71 +15,59 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import api.entities.Associado;
 import api.entities.Pauta;
 import api.entities.Votacao;
+import api.exception.VotoNaoAceitoException;
 import api.repositories.VotacaoRepository;
-import api.services.impl.exceptions.ResultadoVotacaoNaoConcluidoException;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@SpringBootTest(classes= {VotacaoService.class})
 public class VotacaoServiceTest{
 	
 	@MockBean
 	private VotacaoRepository votacaoRepository;
-	@MockBean
-	private AssociadoService associadoService;
-	@MockBean
-	private PautaService pautaService;
-	@MockBean
-	private ApiPermissaoVotoService apiPermissaoVotoService;
-	
 	@Autowired
 	private VotacaoService votacaoService;
 	
 	@BeforeEach
 	public void init() throws Exception {
-		BDDMockito.given(this.votacaoRepository.save(Mockito.any(Votacao.class))).willReturn(new Votacao());
-		BDDMockito.given(this.associadoService.buscarPorId(Mockito.anyString())).willReturn(
-				Optional.of(gerarAssociado()));
-		BDDMockito.given(this.pautaService.buscarPorId(Mockito.anyString())).willReturn(
-				Optional.of(new Pauta("1")));
-		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(Mockito.anyString())).willReturn(true);		
-		
-//		BDDMockito.given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta()))
-//		.willReturn(false);
-		
-		BDDMockito.given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(Mockito.anyString()))
-		.willReturn("ENABLE_TO_VOTE");
-		
-		BDDMockito.given(this.votacaoRepository
-				.findByAssociadoAndPauta(Mockito.any(Associado.class), Mockito.any(Pauta.class)))
-		.willReturn(Optional.empty());
+		BDDMockito.given(this.votacaoRepository.save(Mockito.any(Votacao.class))).willReturn(this.gerarVotacao());
+		BDDMockito.given(this.votacaoRepository.findByAssociadoAndPauta(
+				Mockito.any(Associado.class), Mockito.any(Pauta.class))).willReturn(
+				Optional.of(this.gerarVotacao()));
+		BDDMockito.given(this.votacaoRepository.countByPautaAndVoto(Mockito.anyString(), Mockito.anyString()))
+		.willReturn(2L);
 	}
 
 	@Test
 	public void votar() {
+		
 		Votacao votacao = this.votacaoService.votar(this.gerarVotacao());
 		assertNotNull(votacao);
-	}
-
-	@Test
-	public void jaVotou() {
-		Optional<Votacao> votacao = this.votacaoService.jaVotou(new Associado(), new Pauta());
-		assertFalse(votacao.isPresent());
+		assertEquals(votacao.getVoto(), this.gerarVotacao().getVoto());
 	}
 	
 	@Test
-	public void resultadoVotacao() {		
-		assertThrows(ResultadoVotacaoNaoConcluidoException.class, 
-				() -> {this.votacaoService.resultadoVotacao("1");});
+	public void jaVotou() {
+		Optional<Votacao> votacao = this.votacaoService.jaVotou(new Associado(), new Pauta());
+		assertTrue(votacao.isPresent());
+	}
+
+	@Test
+	public void contarVotos() {
+				
+		assertEquals(2L, this.votacaoService.contarVotos("1", "SIM"));
+		
+		assertThrows(VotoNaoAceitoException.class, () -> {
+			this.votacaoService.contarVotos("1", "NAO");			
+		});
 	}
 	
 	private Votacao gerarVotacao() {
 		
 		Votacao votacao = new Votacao();
+		votacao.setId("1");
 		votacao.setAssociado(gerarAssociado());
 		votacao.setPauta(gerarPauta());
 		votacao.setVoto("sim");

@@ -1,6 +1,7 @@
 package api.controllers;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -14,14 +15,12 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -33,9 +32,8 @@ import api.entities.Associado;
 import api.services.AssociadoService;
 
 @TestMethodOrder(OrderAnnotation.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
+@RunWith(SpringRunner.class)
+@WebMvcTest(controllers = AssociadoController.class)
 public class AssociadoControllerTest {
 
 	@Autowired
@@ -43,21 +41,22 @@ public class AssociadoControllerTest {
 
 	@MockBean
 	private AssociadoService associadoService;
-
 	private List<Associado> associados;
 	
 	
 	@BeforeEach
 	public void init() {
-		this.associados = gerarAssociados();
-		BDDMockito.given(this.associadoService.buscarPorCpf(Mockito.anyString()))
-				.willReturn(Optional.of(gerarAssociados().get(0)));
-		BDDMockito.given(this.associadoService.listar()).willReturn(this.associados);
+		
+		this.associados = gerarAssociados();		
+		given(this.associadoService.listar()).willReturn(this.associados);
+		given(this.associadoService.buscarPorCpf(this.associados.get(0).getCpf()))
+		.willReturn(Optional.of(this.associados.get(0)));
+		
 	}
 
 	@Order(1)
 	@Test
-	public void testIncluirV1() throws Exception {		
+	public void testIncluir() throws Exception {		
 		
 		mvc.perform(MockMvcRequestBuilders.post("/api/v1/associados/").content(this.gerarJsonRequisicaoPost())
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
@@ -68,14 +67,10 @@ public class AssociadoControllerTest {
 
 	@Order(2)
 	@Test
-	public void testBuscarPorCpfV1() throws Exception {
+	public void testBuscarPorCpf() throws Exception {
 		
-//		BDDMockito.given(this.associadoService.buscarPorCpf(Mockito.anyString()))
-//				.willReturn(Optional.of(this.associados.get(0)));
-
 		mvc.perform(MockMvcRequestBuilders.get("/api/v1/associados/cpf/" + this.associados.get(0).getCpf())
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				//.andExpect(jsonPath("$.data.id").value(this.associados.get(0).getId()))
 				.andExpect(jsonPath("$.data.nome", equalTo(this.associados.get(0).getNome())))
 				.andExpect(jsonPath("$.data.cpf", equalTo(this.associados.get(0).getCpf())))
 				.andExpect(jsonPath("$.errors").isEmpty());
@@ -84,8 +79,6 @@ public class AssociadoControllerTest {
 	@Order(3)
 	@Test
 	public void testListarAssociados() throws Exception {
-
-//		BDDMockito.given(this.associadoService.listar()).willReturn(this.associados);
 
 		mvc.perform(MockMvcRequestBuilders.get("/api/v1/associados").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -101,14 +94,12 @@ public class AssociadoControllerTest {
 		
 		List<Associado> associados = new ArrayList<Associado>();
 		
-		Associado associado = new Associado();
-		associado.setId(null);
+		Associado associado = new Associado();		
 		associado.setCpf("71308724462");
 		associado.setNome("Associado 1");		
 		associados.add(associado);
 		
-		associado = new Associado();
-		associado.setId(null);
+		associado = new Associado();		
 		associado.setCpf("92392401012");
 		associado.setNome("Associado 2");
 		associados.add(associado);

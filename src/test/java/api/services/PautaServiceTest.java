@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -15,14 +15,15 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import api.entities.Pauta;
+import api.exception.PautaJaCadastradaException;
 import api.repositories.PautaRepository;
-import api.services.impl.exceptions.PautaJaCadastradaException;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@SpringBootTest(classes = {PautaService.class})
 public class PautaServiceTest {
 
 	@MockBean
@@ -34,8 +35,9 @@ public class PautaServiceTest {
 	@BeforeEach
 	public void init() throws Exception {
 
-//		BDDMockito.given(this.pautaRepository.findByValidaAteAfter(Mockito.any(LocalDateTime.class)))
-//				.willReturn(new ArrayList<Pauta>());
+		BDDMockito.given(this.pautaRepository.findAllByValidaAteAfterAndEncerradaFalse(
+				Mockito.any(LocalDateTime.class), Mockito.any(PageRequest.class)))
+				.willReturn(new PageImpl<Pauta>(new ArrayList<Pauta>()));
 		BDDMockito.given(
 				this.pautaRepository.findAllByIdAndValidaAteAfterAndEncerradaFalse(Mockito.anyString(), Mockito.any(LocalDateTime.class)))
 				.willReturn(Optional.of(new Pauta()));
@@ -44,21 +46,17 @@ public class PautaServiceTest {
 		BDDMockito.given(this.pautaRepository.findByNome(Mockito.anyString())).willReturn(Optional.of(new Pauta()));
 	}
 	
-	@AfterEach
-	public void tearDown() throws Exception{
-		this.pautaRepository.deleteAll();
-	}
-
 	@Test
 	public void estaAbertaParaVotacao() {
 		assertTrue(this.pautaService.estaAbertaParaVotacao("1"));
 	}
 
-//	@Test
-//	public void listarPautasAtivas() {
-//		List<Pauta> pautas = this.pautaService.listarPautasAtivas();
-//		assertNotNull(pautas);
-//	}
+	@Test
+	public void listarPautasAtivas() {
+		
+		Page<Pauta> pautas = this.pautaService.listarPautasAtivas(PageRequest.of(0, 10));
+		assertNotNull(pautas);
+	}
 
 	@Test
 	public void buscarPorId() {
