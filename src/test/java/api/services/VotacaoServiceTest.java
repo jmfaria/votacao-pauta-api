@@ -4,13 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,22 +30,26 @@ public class VotacaoServiceTest{
 	@Autowired
 	private VotacaoService votacaoService;
 	
+	private Votacao votacao;
+	
 	@BeforeEach
 	public void init() throws Exception {
-		BDDMockito.given(this.votacaoRepository.save(Mockito.any(Votacao.class))).willReturn(this.gerarVotacao());
-		BDDMockito.given(this.votacaoRepository.findByAssociadoAndPauta(
+		
+		this.votacao = this.gerarVotacao();
+		given(this.votacaoRepository.save(Mockito.any(Votacao.class))).willReturn(this.votacao);
+		given(this.votacaoRepository.findByAssociadoAndPauta(
 				Mockito.any(Associado.class), Mockito.any(Pauta.class))).willReturn(
-				Optional.of(this.gerarVotacao()));
-		BDDMockito.given(this.votacaoRepository.countByPautaAndVoto(Mockito.anyString(), Mockito.anyString()))
+				Optional.of(this.votacao));
+		given(this.votacaoRepository.countByPautaAndVoto(Mockito.anyString(), Mockito.anyString()))
 		.willReturn(2L);
 	}
 
 	@Test
 	public void votar() {
 		
-		Votacao votacao = this.votacaoService.votar(this.gerarVotacao());
+		Votacao votacao = this.votacaoService.votar(this.votacao);
 		assertNotNull(votacao);
-		assertEquals(votacao.getVoto(), this.gerarVotacao().getVoto());
+		assertEquals(votacao.getVoto(), this.votacao.getVoto());
 	}
 	
 	@Test

@@ -12,7 +12,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,45 +46,48 @@ public class VotacaoBusinessTest {
 	private PautaService pautaService;
 	@MockBean
 	private ApiPermissaoVotoService apiPermissaoVotoService;
+	
+	private Associado associado;
+	private Votacao votacao;
+	private Pauta pauta;
+	private Votacao votacaoVotoNaoAceito;
 
 	@BeforeEach
 	private void init() {
-		given(this.associadoService.buscarPorId(this.gerarAssociado().getId()))
-				.willReturn(Optional.of(this.gerarAssociado()));
-		given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(gerarPauta()));
-		given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(true);
-		given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta())).willReturn(Optional.empty());
-		given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(gerarAssociado().getCpf()))
-				.willReturn(true);
-		given(this.votacaoService.votar(this.gerarVotacao())).willReturn(this.gerarVotacao());
+		
+		this.associado = this.gerarAssociado();
+		this.pauta = this.gerarPauta();
+		this.votacao = this.gerarVotacao();
+		this.votacaoVotoNaoAceito = this.gerarVotacaoVotoNaoAceito();
+		
 	}
-	
+
 	@AfterEach
 	private void reset() {
-		    Mockito.reset(votacaoService);
-		    Mockito.reset(associadoService);
-		    Mockito.reset(pautaService);
-		    Mockito.reset(apiPermissaoVotoService);		    
+		votacaoBusiness = null;
+		Mockito.reset(votacaoService);
+		Mockito.reset(associadoService);
+		Mockito.reset(pautaService);
+		Mockito.reset(apiPermissaoVotoService);
 	}
 
 	@Test
 	public void votarComAssociadoInexistente() {
 
-		given(this.associadoService.buscarPorId(this.gerarAssociado().getId())).willReturn(Optional.empty());
+		given(this.associadoService.buscarPorId(this.associado.getId())).willReturn(Optional.empty());
 		assertThrows(AssociadoInexistenteException.class, () -> {
-			this.votacaoBusiness.votar(this.gerarVotacao());
+			this.votacaoBusiness.votar(this.votacao);
 		});
 	}
 
 	@Test
 	public void votarComPautaInexistente() {
 
-		given(this.associadoService.buscarPorId(this.gerarAssociado().getId()))
-				.willReturn(Optional.of(this.gerarAssociado()));
-		given(this.pautaService.buscarPorId(this.gerarPauta().getId())).willReturn(Optional.empty());
+		given(this.associadoService.buscarPorId(this.associado.getId()))
+				.willReturn(Optional.of(this.associado));
+		given(this.pautaService.buscarPorId(this.pauta.getId())).willReturn(Optional.empty());
 		assertThrows(PautaInexistenteException.class, () -> {
-			this.votacaoBusiness.votar(this.gerarVotacao());
+			this.votacaoBusiness.votar(this.votacao);
 		});
 
 	}
@@ -93,13 +95,12 @@ public class VotacaoBusinessTest {
 	@Test
 	public void votarComPautaNaoAbertaOuJaEncerrada() {
 
-		given(this.associadoService.buscarPorId(this.gerarAssociado().getId()))
-				.willReturn(Optional.of(this.gerarAssociado()));
-		given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(gerarPauta()));
-		given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(false);
+		given(this.associadoService.buscarPorId(this.associado.getId()))
+				.willReturn(Optional.of(this.associado));
+		given(this.pautaService.buscarPorId(this.pauta.getId())).willReturn(Optional.of(this.pauta));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(false);
 		assertThrows(PautaNaoAbertaOuJaFechadaException.class, () -> {
-			this.votacaoBusiness.votar(this.gerarVotacao());
+			this.votacaoBusiness.votar(this.votacao);
 		});
 
 	}
@@ -107,48 +108,42 @@ public class VotacaoBusinessTest {
 	@Test
 	public void votarComAssociadoQueJaVotouPauta() {
 
-		given(this.associadoService.buscarPorId(this.gerarAssociado().getId()))
-				.willReturn(Optional.of(this.gerarAssociado()));
-		given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(gerarPauta()));
-		given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(true);
-		given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta()))
-				.willReturn(Optional.of(this.gerarVotacao()));
+		given(this.associadoService.buscarPorId(this.associado.getId()))
+				.willReturn(Optional.of(this.associado));
+		given(this.pautaService.buscarPorId(this.pauta.getId())).willReturn(Optional.of(this.pauta));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(true);
+		given(this.votacaoService.jaVotou(this.associado, this.pauta)).willReturn(Optional.of(this.votacao));
 		assertThrows(AssociadoJaVotouPautaException.class, () -> {
-			this.votacaoBusiness.votar(this.gerarVotacao());
+			this.votacaoBusiness.votar(this.votacao);
 		});
 
 	}
 
 	@Test
 	public void votarSemPermissaoApiExterna() {
- 
-		given(this.associadoService.buscarPorId(this.gerarAssociado().getId()))
-				.willReturn(Optional.of(this.gerarAssociado()));
-		given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(gerarPauta()));
-		given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(true);
-		given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta())).willReturn(Optional.empty());
-		given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(gerarAssociado().getCpf()))
-				.willReturn(false);
+
+		given(this.associadoService.buscarPorId(this.associado.getId()))
+				.willReturn(Optional.of(this.associado));
+		given(this.pautaService.buscarPorId(this.pauta.getId())).willReturn(Optional.of(this.pauta));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(true);
+		given(this.votacaoService.jaVotou(this.associado, this.pauta)).willReturn(Optional.empty());
+		given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(this.associado.getCpf())).willReturn(false);
 		assertThrows(ApiExternalNaoPermitiuVotoException.class, () -> {
-			this.votacaoBusiness.votar(this.gerarVotacao());
+			this.votacaoBusiness.votar(this.votacao);
 		});
 	}
 
 	@Test
 	public void votarComVotoNaoAceito() {
 
-		given(this.associadoService.buscarPorId(this.gerarAssociado().getId()))
-				.willReturn(Optional.of(this.gerarAssociado()));
-		given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(gerarPauta()));
-		given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(true);
-		given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta())).willReturn(Optional.empty());
-		given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(gerarAssociado().getCpf()))
-				.willReturn(true);
+		given(this.associadoService.buscarPorId(this.associado.getId()))
+				.willReturn(Optional.of(this.associado));
+		given(this.pautaService.buscarPorId(this.pauta.getId())).willReturn(Optional.of(this.pauta));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(true);
+		given(this.votacaoService.jaVotou(this.associado, this.pauta)).willReturn(Optional.empty());
+		given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(this.associado.getCpf())).willReturn(true);
 		assertThrows(VotoNaoAceitoException.class, () -> {
-			this.votacaoBusiness.votar(this.gerarVotacaoVotoNaoAceito());
+			this.votacaoBusiness.votar(this.votacaoVotoNaoAceito);
 		});
 
 	}
@@ -156,35 +151,33 @@ public class VotacaoBusinessTest {
 	@Test
 	public void votarSucesso() {
 
-		given(this.associadoService.buscarPorId(this.gerarAssociado().getId()))
-				.willReturn(Optional.of(this.gerarAssociado()));
-		given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(gerarPauta()));
-		given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(true);
-		given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta())).willReturn(Optional.empty());
-		given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(gerarAssociado().getCpf()))
-				.willReturn(true);
-		given(this.votacaoService.votar(this.gerarVotacao())).willReturn(this.gerarVotacao());
-		Votacao votacao = this.votacaoBusiness.votar(this.gerarVotacao());
-		assertEquals(this.gerarVotacao().getId(), votacao.getId());
+		given(this.associadoService.buscarPorId(this.associado.getId()))
+				.willReturn(Optional.of(this.associado));
+		given(this.pautaService.buscarPorId(this.pauta.getId())).willReturn(Optional.of(this.pauta));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(true);
+		given(this.votacaoService.jaVotou(this.associado, this.pauta)).willReturn(Optional.empty());
+		given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(this.associado.getCpf())).willReturn(true);
+		given(this.votacaoService.votar(this.votacao)).willReturn(this.votacao);
+		Votacao votacao = this.votacaoBusiness.votar(this.votacao);
+		assertEquals(this.votacao.getId(), votacao.getId());
 	}
 
 	@Test
 	public void jaVotou() {
 
-		BDDMockito.given(this.associadoService.buscarPorId(this.gerarAssociado().getId()))
-				.willReturn(Optional.of(this.gerarAssociado()));
-		BDDMockito.given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(gerarPauta()));
-		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(true);
+		given(this.associadoService.buscarPorId(this.associado.getId()))
+				.willReturn(Optional.of(this.associado));
+		given(this.pautaService.buscarPorId(this.pauta.getId()))
+				.willReturn(Optional.of(this.pauta));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(true);
 
-		BDDMockito.given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta()))
-				.willReturn(Optional.of(this.gerarVotacao()));
-		Optional<Votacao> votacao = this.votacaoBusiness.jaVotou(gerarAssociado(), gerarPauta());
+		given(this.votacaoService.jaVotou(this.associado, this.pauta))
+				.willReturn(Optional.of(this.votacao));
+		Optional<Votacao> votacao = this.votacaoBusiness.jaVotou(this.associado, this.pauta);
 		assertTrue(votacao.isPresent());
 
-		BDDMockito.given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta())).willReturn(Optional.empty());
-		votacao = this.votacaoBusiness.jaVotou(new Associado(), new Pauta());
+		given(this.votacaoService.jaVotou(this.associado, this.pauta)).willReturn(Optional.empty());
+		votacao = this.votacaoBusiness.jaVotou(this.associado, this.pauta);
 		assertFalse(votacao.isPresent());
 
 	}
@@ -192,26 +185,26 @@ public class VotacaoBusinessTest {
 	@Test
 	public void contarVotos() {
 
-		BDDMockito.given(this.pautaService.buscarPorId(this.gerarPauta().getId())).willReturn(Optional.empty());
+		given(this.pautaService.buscarPorId(this.pauta.getId())).willReturn(Optional.empty());
 		assertThrows(PautaInexistenteException.class, () -> {
-			this.votacaoBusiness.resultadoVotacao(this.gerarPauta().getId());
+			this.votacaoBusiness.resultadoVotacao(this.pauta.getId());
 		});
 
-		BDDMockito.given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(this.gerarPauta()));
-		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(true);
+		given(this.pautaService.buscarPorId(this.pauta.getId()))
+				.willReturn(Optional.of(this.pauta));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(true);
 		assertThrows(ResultadoVotacaoNaoConcluidoException.class, () -> {
-			this.votacaoBusiness.resultadoVotacao(this.gerarPauta().getId());
+			this.votacaoBusiness.resultadoVotacao(this.pauta.getId());
 		});
 
-		BDDMockito.given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(this.gerarPauta()));
-		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(false);
+		given(this.pautaService.buscarPorId(this.pauta.getId()))
+				.willReturn(Optional.of(this.pauta));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(false);
 
-		BDDMockito.given(this.votacaoService.contarVotos("1", "SIM")).willReturn(2L);
-		BDDMockito.given(this.votacaoService.contarVotos("1", "NÃO")).willReturn(3L);
+		given(this.votacaoService.contarVotos("1", "SIM")).willReturn(2L);
+		given(this.votacaoService.contarVotos("1", "NÃO")).willReturn(3L);
 
-		ResultadoVotacao resultadoVotacao = this.votacaoBusiness.resultadoVotacao(this.gerarPauta().getId());
+		ResultadoVotacao resultadoVotacao = this.votacaoBusiness.resultadoVotacao(this.pauta.getId());
 		assertEquals(2L, resultadoVotacao.getVotosSim());
 		assertEquals(3L, resultadoVotacao.getVotosNao());
 		assertEquals(5L, resultadoVotacao.getVotosTotal());

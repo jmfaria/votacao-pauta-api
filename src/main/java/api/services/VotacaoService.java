@@ -33,7 +33,7 @@ public class VotacaoService {
 			log.error("Voto não aceito: {}", voto);
 			throw new VotoNaoAceitoException();
 		}		
-		return this.votacaoRepository.countByPautaAndVoto(pautaId, "SIM");				
+		return this.votacaoRepository.countByPautaAndVoto(pautaId, voto);				
 	}	
 
 }

@@ -92,7 +92,43 @@ services:
       - mongo
     networks:
       - localnet
+      
+  sonarqube:
+    image: sonarqube:7.1
+    restart: always
+    ports:
+      - "9000:9000"
+    networks:
+      - localnet
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonar
+    volumes:
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    restart: always
+    networks:
+      - localnet
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+
 volumes:
+  sonarqube_conf:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_bundled-plugins:
+  postgresql:
+  postgresql_data:
   mongodbdata:
     external: true  
 networks:

@@ -3,6 +3,7 @@ package api.services;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +28,19 @@ public class AssociadoServiceTest {
 
 	@MockBean
 	private AssociadoRepository associadoRepository;
-
 	@Autowired
 	private AssociadoService associadoService;
+	
+	private Associado associado;
 
 	@BeforeEach
 	public void init() throws Exception {
 
-		BDDMockito.given(this.associadoRepository.findAll()).willReturn(new ArrayList<Associado>());
-		BDDMockito.given(this.associadoRepository.findById(Mockito.anyString()))
+		this.associado = this.gerarAssociado();
+		given(this.associadoRepository.findAll()).willReturn(new ArrayList<Associado>());
+		given(this.associadoRepository.findById(Mockito.anyString()))
 				.willReturn(Optional.of(new Associado()));
-		BDDMockito.given(this.associadoRepository.save(Mockito.any(Associado.class))).willReturn(new Associado());
+		given(this.associadoRepository.save(Mockito.any(Associado.class))).willReturn(new Associado());
 
 	}
 
@@ -64,14 +67,14 @@ public class AssociadoServiceTest {
 		});
 			
 		//Incluído com sucesso
-		Associado associado1 = this.associadoService.incluir(gerarAssociado());
+		Associado associado1 = this.associadoService.incluir(this.associado);
 		assertNotNull(associado1);
 		
 		//CPF já cadastrado
 		BDDMockito.given(this.associadoRepository.findByCpf(Mockito.anyString()))
 		.willReturn(Optional.of(new Associado()));
 		assertThrows(AssociadoCpfJaCadastradoException.class, () -> {
-			this.associadoService.incluir(gerarAssociado());	
+			this.associadoService.incluir(this.associado);	
 		});
 	}
 
@@ -82,8 +85,8 @@ public class AssociadoServiceTest {
 			this.associadoService.buscarPorCpf("123");
 		});
 
-		BDDMockito.given(this.associadoRepository.findByCpf(Mockito.anyString()))
-				.willReturn(Optional.of(gerarAssociado()));
+		given(this.associadoRepository.findByCpf(Mockito.anyString()))
+				.willReturn(Optional.of(this.associado));
 		Optional<Associado> associado = this.associadoService.buscarPorCpf("44158921082");
 		assertTrue(associado.isPresent());
 	}

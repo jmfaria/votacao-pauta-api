@@ -33,51 +33,50 @@ public class PautaBusinessTest {
 	private PautaService pautaService;
 	@Autowired
 	private PautaBusiness pautaBusiness;
+	
+	private Pauta pauta;
+	private List<Pauta> pautas;
+	private ResultadoVotacao resultadoVotacao;
 
 	@BeforeEach
 	private void init() {
-
-//		BDDMockito.given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-//				.willReturn(Optional.of(gerarPauta()));
-//		BDDMockito.given(this.pautaService.estaAbertaParaVotacao(gerarPauta().getId())).willReturn(true);
-//		BDDMockito.given(this.votacaoService.jaVotou(gerarAssociado(), gerarPauta())).willReturn(Optional.empty());
-//		BDDMockito.given(this.apiPermissaoVotoService.associadoComPermissaoParaVotar(gerarAssociado().getCpf()))
-//				.willReturn(true);
-//		BDDMockito.given(this.votacaoService.votar(this.gerarVotacao())).willReturn(this.gerarVotacao());
+		this.pauta = this.gerarPauta();
+		this.pautas = this.gerarPautas();
+		this.resultadoVotacao = this.gerarResultadoVotacao();		
 	}
 
 	@Test
 	public void resultadoVotacao() {
 
-		given(this.votacaoBusiness.resultadoVotacao(this.gerarPauta().getId()))
-				.willReturn(this.gerarResultadoVotacao());
-		assertNotNull(this.pautaBusiness.resultadoVotacao(this.gerarPauta().getId()));
+		given(this.votacaoBusiness.resultadoVotacao(this.pauta.getId()))
+				.willReturn(this.resultadoVotacao);
+		assertNotNull(this.pautaBusiness.resultadoVotacao(this.pauta.getId()));
 
-		given(this.votacaoBusiness.resultadoVotacao(this.gerarPauta().getId())).willReturn(null);
-		assertNull(this.pautaBusiness.resultadoVotacao(this.gerarPauta().getId()));
+		given(this.votacaoBusiness.resultadoVotacao(this.pauta.getId())).willReturn(null);
+		assertNull(this.pautaBusiness.resultadoVotacao(this.pauta.getId()));
 	}
 
 	public void finalizarPauta() {
 
-		given(this.pautaService.finalizarPauta(this.gerarPauta())).willReturn(this.gerarPauta());
-		assertNotNull(this.pautaService.finalizarPauta(this.gerarPauta()));
+		given(this.pautaService.finalizarPauta(this.pauta)).willReturn(this.pauta);
+		assertNotNull(this.pautaService.finalizarPauta(this.pauta));
 
-		given(this.pautaService.finalizarPauta(this.gerarPauta())).willReturn(null);
-		assertNull(this.pautaBusiness.finalizarPauta(this.gerarPauta()));
+		given(this.pautaService.finalizarPauta(this.pauta)).willReturn(null);
+		assertNull(this.pautaBusiness.finalizarPauta(this.pauta));
 	}
 
 	public void estaAbertaParaVotacao() {
 
-		given(this.pautaService.estaAbertaParaVotacao(this.gerarPauta().getId())).willReturn(true);
-		assertTrue(this.pautaService.estaAbertaParaVotacao(this.gerarPauta().getId()));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(true);
+		assertTrue(this.pautaService.estaAbertaParaVotacao(this.pauta.getId()));
 
-		given(this.pautaService.estaAbertaParaVotacao(this.gerarPauta().getId())).willReturn(false);
-		assertFalse(this.pautaService.estaAbertaParaVotacao(this.gerarPauta().getId()));
+		given(this.pautaService.estaAbertaParaVotacao(this.pauta.getId())).willReturn(false);
+		assertFalse(this.pautaService.estaAbertaParaVotacao(this.pauta.getId()));
 	}
 
 	public void listarPautasNaoEncerradas() {
 
-		given(this.pautaService.listarPautasNaoEncerradas()).willReturn(gerarPautas());
+		given(this.pautaService.listarPautasNaoEncerradas()).willReturn(this.pautas);
 		assertEquals(2, this.pautaService.listarPautasNaoEncerradas().size());
 
 	}
@@ -85,38 +84,38 @@ public class PautaBusinessTest {
 	public void listarPautasAtivas() {
 
 		given(this.pautaService.listarPautasAtivas(PageRequest.of(0, 1)))
-				.willReturn(new PageImpl<>(gerarPautas()));
+				.willReturn(new PageImpl<>(this.pautas));
 		assertNotNull(this.pautaService.listarPautasAtivas(PageRequest.of(0, 1)));
 
 	}
 
 	public void listarTodas() {
-		given(this.pautaService.listarTodas(PageRequest.of(0, 1))).willReturn(new PageImpl<>(gerarPautas()));
+		given(this.pautaService.listarTodas(PageRequest.of(0, 1))).willReturn(new PageImpl<>(this.pautas));
 		assertNotNull(this.pautaService.listarTodas(PageRequest.of(0, 1)));
 	}
 
 	public void buscarPorId() {
-		given(this.pautaService.buscarPorId(this.gerarPauta().getId()))
-				.willReturn(Optional.of(this.gerarPauta()));
-		assertNotNull(this.pautaService.buscarPorId(this.gerarPauta().getId()));
+		given(this.pautaService.buscarPorId(this.pauta.getId()))
+				.willReturn(Optional.of(this.pauta));
+		assertNotNull(this.pautaService.buscarPorId(this.pauta.getId()));
 	}
 
 	public void incluir() {
-		given(this.pautaService.incluir(this.gerarPauta())).willReturn(this.gerarPauta());
-		assertNotNull(this.pautaService.incluir(this.gerarPauta()));
+		given(this.pautaService.incluir(this.pauta)).willReturn(this.pauta);
+		assertNotNull(this.pautaService.incluir(this.pauta));
 	}
 
 	public void buscarPeloNome() {
-		given(this.pautaService.buscarPeloNome(this.gerarPauta().getNome()))
-		.willReturn(Optional.of(this.gerarPauta()));
-		assertNotNull(this.pautaService.buscarPeloNome(this.gerarPauta().getNome()));
+		given(this.pautaService.buscarPeloNome(this.pauta.getNome()))
+		.willReturn(Optional.of(this.pauta));
+		assertNotNull(this.pautaService.buscarPeloNome(this.pauta.getNome()));
 	}
 
 	public void abrirSessaoParaVotacao() {
 
-		given(this.pautaService.abrirSessaoParaVotacao(this.gerarPauta()))
-		.willReturn(this.gerarPauta());
-		assertNotNull(this.pautaService.abrirSessaoParaVotacao(this.gerarPauta()));
+		given(this.pautaService.abrirSessaoParaVotacao(this.pauta))
+		.willReturn(this.pauta);
+		assertNotNull(this.pautaService.abrirSessaoParaVotacao(this.pauta));
 	}
 
 	private Pauta gerarPauta() {

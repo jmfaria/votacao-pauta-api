@@ -3,6 +3,7 @@ package api.services;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,15 +35,15 @@ public class PautaServiceTest {
 	@BeforeEach
 	public void init() throws Exception {
 
-		BDDMockito.given(this.pautaRepository.findAllByValidaAteAfterAndEncerradaFalse(
+		given(this.pautaRepository.findAllByValidaAteAfterAndEncerradaFalse(
 				Mockito.any(LocalDateTime.class), Mockito.any(PageRequest.class)))
 				.willReturn(new PageImpl<Pauta>(new ArrayList<Pauta>()));
-		BDDMockito.given(
+		given(
 				this.pautaRepository.findAllByIdAndValidaAteAfterAndEncerradaFalse(Mockito.anyString(), Mockito.any(LocalDateTime.class)))
 				.willReturn(Optional.of(new Pauta()));
-		BDDMockito.given(this.pautaRepository.findById(Mockito.anyString())).willReturn(Optional.of(new Pauta()));
-		BDDMockito.given(this.pautaRepository.save(Mockito.any(Pauta.class))).willReturn(new Pauta());
-		BDDMockito.given(this.pautaRepository.findByNome(Mockito.anyString())).willReturn(Optional.of(new Pauta()));
+		given(this.pautaRepository.findById(Mockito.anyString())).willReturn(Optional.of(new Pauta()));
+		given(this.pautaRepository.save(Mockito.any(Pauta.class))).willReturn(new Pauta());
+		given(this.pautaRepository.findByNome(Mockito.anyString())).willReturn(Optional.of(new Pauta()));
 	}
 	
 	@Test
